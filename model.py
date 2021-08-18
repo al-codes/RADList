@@ -1,4 +1,4 @@
-""" radlist db tables """
+""" RADList db tables """
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -27,35 +27,40 @@ class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    user = db.relationship("User", backref="playlists")
-
+ 
+    user = db.relationship("User", backref="playlists") #relation between users and playlist defined here
+    tracks = db.relationship("Track",
+                             secondary="playlist_tracks",
+                             backref="playlists") #added additional info here with secondary
     def __repr__(self):
         return f'<Playlist playlist_id={self.playlist_id} name={self.name} user_id={self.user_id}>'
 
 class Track(db.Model):
     """Data model for a track."""
+
     __tablename__ = "tracks"
 
     track_id = db.Column(db.Integer, primary_key=True, nullable=False)
     title = db.Column(db.String, nullable=False)
     artist = db.Column(db.String, nullable=False)
-    # duration = db.Column(db.Integer, nullable=False)
+    
 
     def __repr__(self):
         return f'<Track track_id={self.track_id} title={self.title} artist={self.artist}>'
 
 class Playlist_Track(db.Model):
     """Data model for a playlist track assoc table."""
+    
     __tablename__ = "playlist_tracks"
 
     playlist_track_id = db.Column(db.Integer, primary_key=True, nullable=False)
     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.track_id'), nullable=False)
 
-    playlist = db.relationship("Playlist", backref="playlist_tracks")
+    playlist = db.relationship("Playlist", backref="playlist_tracks") # dont need bc relationship defined already
     track = db.relationship("Track", backref="playlist_tracks")
 
-
+    3
     def __repr__(self):
         return f'<Playlist_Track playlist_id={self.playlist_id} track_id={self.track_id}>'
 
@@ -80,20 +85,20 @@ if __name__ == '__main__':
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
     connect_to_db(app)
-    db.create_all()
+    # db.create_all()
 
-    tu = User(fname='alex', lname='sanchez', email='bb@bb.com', password='secret')
-    db.session.add(tu)
-    db.session.commit()
+    # tu = User(fname='alex', lname='sanchez', email='bb@bb.com', password='secret')
+    # db.session.add(tu)
+    # db.session.commit()
 
-    tp = Playlist(name='yacht rockers', user_id=1)
-    db.session.add(tp)
-    db.session.commit()
+    # tp = Playlist(name='yacht rockers', user_id=1)
+    # db.session.add(tp)
+    # db.session.commit()
 
-    tt = Track(title='sailin', artist='christopher cross')
-    db.session.add(tt)
-    db.session.commit()
+    # tt = Track(title='sailin', artist='christopher cross')
+    # db.session.add(tt)
+    # db.session.commit()
 
-    tpt = Playlist_Track(playlist_id=1, track_id=1)
-    db.session.add(tpt)
-    db.session.commit()
+    # tpt = Playlist_Track(playlist_id=1, track_id=1)
+    # db.session.add(tpt)
+    # db.session.commit()

@@ -25,6 +25,8 @@ def create_playlist(user, name):
     db.session.commit()
 
     return playlist
+    # (to test, have to create user with variable name and then 
+    # plug that user var into this fcn)
 
 def create_track(title, artist):
     """Creates a track."""
@@ -37,6 +39,13 @@ def create_track(title, artist):
     
     return track
 
+# def create_playlist_track(playlist_id, track_id):
+#     """Associate track with a playlist"""
+
+#     playlist_track = Playlist_Track(playlist_id = playlist_id, 
+#                                     track_id = track_id)
+
+#     return playlist_track
 
 
 if __name__ == '__main__':
