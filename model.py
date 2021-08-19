@@ -85,20 +85,4 @@ if __name__ == '__main__':
     # As a convenience, if we run this module interactively, it will leave
     # you in a state of being able to work with the database directly.
     connect_to_db(app)
-    # db.create_all()
-
-    # tu = User(fname='alex', lname='sanchez', email='bb@bb.com', password='secret')
-    # db.session.add(tu)
-    # db.session.commit()
-
-    # tp = Playlist(name='yacht rockers', user_id=1)
-    # db.session.add(tp)
-    # db.session.commit()
-
-    # tt = Track(title='sailin', artist='christopher cross')
-    # db.session.add(tt)
-    # db.session.commit()
-
-    # tpt = Playlist_Track(playlist_id=1, track_id=1)
-    # db.session.add(tpt)
-    # db.session.commit()
+    
