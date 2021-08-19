@@ -33,5 +33,5 @@ crud.create_track('one', 'metallica')
 # crud.create_playlist_track(2, 2)
 # crud.create_playlist_track(3, 3)
  
-
-
+# only running once to populate database
+quit

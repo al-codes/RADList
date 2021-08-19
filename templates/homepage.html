@@ -13,12 +13,32 @@
     <title>R.A.D. List</title>
 
 
-
+<!-- 
+get 10 similar artists from similar artist last fm api
+put all the artists in a list? 
+loop through artists in the list and pull their 2 top tracks / artist info
+add all track and artist info to a list -- playlist
+get all top tracks 
+-->
 
 </head>
 <body>
     <div id="homepage">hey, i'm the start of a homepage!</div>
-   
+    {% block content %}
+
+    
+    {% set sim_artist_list = [] %}
+    
+    {% for i in range(0,10) %}
+            <!-- this gets 10 similar artists to Cher and appends to sim_artist_list -->
+        {{ sim_artist_list.append((data1['similarartists']['artist'][i])['name'])  }}
+    {% endfor %}
+
+    {{ sim_artist_list }}
+    
+    
+      
+    {% endblock %}
 
     <!-- Javascript import -->
     <script src="/static/radlist.js"></script>

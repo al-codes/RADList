@@ -12,14 +12,17 @@ API_KEY = os.environ['LASTFM_KEY']
 
 @app.route("/")
 def index():
-    
-    # url = 'http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=David+Bowie&api_key=d39bc6865aba965b8a8e4f8ec2dc6276&format=json'
-    # res = requests.get(url)
-    # data = res.json()
+    url1 = 'http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=cher&api_key=d39bc6865aba965b8a8e4f8ec2dc6276&format=json'
+    # http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=cher&api_key=YOUR_API_KEY&format=json
+    url2 = 'http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks&artist=cher&api_key=d39bc6865aba965b8a8e4f8ec2dc6276&format=json'
+    res1 = requests.get(url1)
+    res2 = requests.get(url2)
+    data1 = res1.json()
+    data2 = res2.json()
 
     
-    # return render_template("homepage.html", data=data)
-    return render_template("homepage.html")
+    return render_template("homepage.html", data1=data1, data2=data2)
+    # return render_template("homepage.html")
 
 # LOGIN from shopping-site further study
 # @app.route("/login", methods=["GET"])
