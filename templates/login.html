@@ -2,6 +2,22 @@
 {% block body %}
     <br>
     A login form goes here<br>
+
+     <!-- Login Form -->
+     <div id="login-info">
+        <div id="login">
+            <!-- Get/Post - how does this relate to our db? -->
+          <form id="login-form" action="/login" method="POST">  
+                <label>Email: </label>
+                <input type="text" name="email" /><br>
+                <label>Password: </label>
+                <input type="text" name="password" />
+            <div>
+                <input id="submit-btn" type="submit" value="Log In" />
+            </div>
+          </form>
+        </div>
+    </div>
     <a href="http://localhost:5000/">Homepage</a><br>
 
 {% endblock %}

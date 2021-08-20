@@ -3,6 +3,26 @@
     <br>
     Sign up form goes here<br>
     <a href="http://localhost:5000/">Homepage</a><br>
+    <!-- Sign up Form -->
+    <div id="signup-info">
+        <div id="signup">
+            <!-- Get/Post - how does this relate to our db? -->
+          <form id="signup-form" action="/signup" method="POST">
+                <label>First Name: </label>
+                <input type="text" name="fname" /><br>
+                <label>Last Name: </label>
+                <input type="text" name="lname" /><br>
+                <label>Email: </label>
+                <input type="text" name="email" /><br>
+                <label>Password: </label>
+                <input type="text" name="password" /><br>
+            <div>
+                <input id="submit-btn" type="submit" value="Sign Up" />
+            </div>
+          </form>
+        </div>
+    </div>
+
+{% endblock %}
 </body>
 </html>
-{% endblock %}
