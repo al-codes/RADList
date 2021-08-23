@@ -1,14 +1,16 @@
 """CRUD operations."""
 
-from model import db, User, Track, Playlist, Playlist_Track, connect_to_db
+from model import (db, User, Track, Playlist, Playlist_Track, connect_to_db)
+from passlib.hash import argon2
 
 def create_user(fname, lname, email, password):
     """Creates a new user."""
 
-    user = User(fname = fname, 
-                lname = lname, 
-                email = email, 
-                password = password)
+    user = User(fname=fname, 
+                lname=lname, 
+                email=email, 
+                password=argon2.hash(password), 
+                )
 
     db.session.add(user)
     db.session.commit()
