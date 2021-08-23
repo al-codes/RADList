@@ -1,23 +1,26 @@
-""" RADList db tables """
+""" RAD List db tables """
 
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
+
 
 class User(db.Model):
     """Data model for a user."""
     __tablename__ = "users"
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    fname = db.Column(db.String(25), nullable=False)
-    lname = db.Column(db.String(25), nullable=False)
-    email = db.Column(db.String(100), nullable=False)
-    password = db.Column(db.String(20), nullable=False)
+    fname = db.Column(db.String, nullable=False)
+    lname = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False)
+    password = db.Column(db.String, nullable=False)
     photo = db.Column(db.String) # nullable
     
 
     def __repr__(self):
         return f'<User user_id={self.user_id}, Full name={self.fname} {self.lname}, email={self.email}>'
+
+
 
 class Playlist(db.Model):
     """Data model for a playlist."""
@@ -25,15 +28,18 @@ class Playlist(db.Model):
     __tablename__ = "playlists"
     
     playlist_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    name = db.Column(db.String(50))
+    name = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
  
-    user = db.relationship("User", backref="playlists") #relation between users and playlist defined here
+    user = db.relationship("User") #relation between users and playlist defined here
     tracks = db.relationship("Track",
                              secondary="playlist_tracks",
                              backref="playlists") #added additional info here with secondary
+                             
     def __repr__(self):
         return f'<Playlist playlist_id={self.playlist_id} name={self.name} user_id={self.user_id}>'
+
+
 
 class Track(db.Model):
     """Data model for a track."""
@@ -48,6 +54,8 @@ class Track(db.Model):
     def __repr__(self):
         return f'<Track track_id={self.track_id} title={self.title} artist={self.artist}>'
 
+
+
 class Playlist_Track(db.Model):
     """Data model for a playlist track assoc table."""
     
@@ -57,10 +65,10 @@ class Playlist_Track(db.Model):
     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.track_id'), nullable=False)
 
-    playlist = db.relationship("Playlist", backref="playlist_tracks") # dont need bc relationship defined already
-    track = db.relationship("Track", backref="playlist_tracks")
+    # playlist = db.relationship("Playlist", backref="playlist_tracks") # dont need bc relationship defined already
+    # track = db.relationship("Track", backref="playlist_tracks")
 
-    3
+    
     def __repr__(self):
         return f'<Playlist_Track playlist_id={self.playlist_id} track_id={self.track_id}>'
 
@@ -81,8 +89,5 @@ def connect_to_db(flask_app, db_uri='postgresql:///radlist', echo=True):
 
 if __name__ == '__main__':
     from server import app
-
-    # As a convenience, if we run this module interactively, it will leave
-    # you in a state of being able to work with the database directly.
     connect_to_db(app)
     
