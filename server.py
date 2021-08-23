@@ -1,13 +1,15 @@
-from flask import (Flask, render_template, redirect, request, session, flash, 
-                    jsonify)
+""" Server for RAD List """
+
+from flask import (Flask, render_template, redirect, request, session, 
+                   flash, jsonify)
 from jinja2 import StrictUndefined
-from model import connect_to_db, User, Playlist, Track
-import crud #comment out if you want to -i into crud.py
+from model import (connect_to_db, User, Playlist, Track)
+import crud 
 import os
+from passlib.hash import argon2
 
 
 app = Flask(__name__)
-
 app.secret_key = 'dev'
 app.jinja_env.undefined = StrictUndefined
 app.config['PRESERVE_CONTEXT_ON_EXCEPTION'] = True
@@ -19,6 +21,7 @@ LASTFM_API_KEY = os.environ['LASTFM_KEY']
 @app.route('/')
 def index():
     """ Display homepage """
+
   
     return render_template('homepage.html')
 
@@ -26,22 +29,59 @@ def index():
 
 #############################################
 # USER SIGNUP/LOGIN ROUTES
-
-@app.route('/signup')
-def signup_user():
-    """ Signs up a user """
-    
-    # Something similar to this:
-    # fname = request.form['fname']
-    # lname = request.form['lname']
-    # email = request.form['email']
-    # password = request.form['password']
+@app.route('/signup', methods=['GET'])
+def show_signup():
 
     return render_template('signup.html')
 
+@app.route('/signup', methods=['POST'])
+def signup_user():
+    """ Signs up a user """
+    
+    
+    fname = request.form['fname']
+    lname = request.form['lname']
+    email = request.form['email']
+    password = request.form['password']
+
+    user = User.query.filter_by(email = email).first()
+
+    # If email exists in db, redirect to homepage
+    if user != None:
+        flash('This email is already taken.')
+        return redirect('/')
+
+    # If user email/pass is already in the db
+    elif user != None and user.email == email and user.password == password:
+        flash('This email and password already exists. Please go to Login to sign in.')
 
 
-@app.route('/login', methods=['GET']) # what is needed here? get or post? is get needed at all?
+    # If a new user and all correct
+
+    else:
+        # Add new user
+        new_user = crud.create_user(fname = fname, 
+                                    lname = lname, 
+                                    email = email,
+                                    password = password)
+       
+
+        crud.db.session.add(new_user)
+        crud.db.session.commit()
+
+        # Saving user to session
+        # might move this function out of crud
+        user = crud.get_user_by_email(email) 
+        session['EMAIL'] = user.email
+        session['NAME'] = user.fname 
+        session['ID'] = user.user_id
+        print('success')
+        flash('You have registered successfully.')
+        return redirect ('/')
+
+
+
+@app.route('/login', methods=['GET']) 
 def show_login():
     """ Shows user login form """
 
@@ -51,29 +91,44 @@ def show_login():
 
 @app.route('/login', methods=['POST'])
 def process_login():
-    """ Logs in user """
+    """ Logs in and verifies a user """
 
-    # Something similar to this logic:
+  
+    # Get email and password from Login form
+    email = request.form.get('email')
+    input_password = request.form.get('password')
 
-    email = request.form['email']
-    password_input = request.form['password']
+    # Gets user by email entered in login form
+    user = crud.get_user_by_email(email) 
 
-    user = crud.get_user_by_email(email) # created fcn in crud.py
-
+    # If user does not exist
     if user == None:
-        flash('Email does not exist. Please try again.')
-        return redirect('/')
+        flash('Email does not exist. Please sign up or try again.')
+        return redirect('/login')
     
+    # If user exists and password matches, show success and take to profile
     else:
-        if password_input ==  user.password:
+        if argon2.verify(input_password, user.password):
             session['EMAIL'] = user.email
-            session['NAME'] = user.fname 
+            session['FNAME'] = user.fname 
+            session['LNAME'] = user.lname
             session['ID'] = user.user_id
-            return redirect (f'/user-profile/{user.fname}')  
+            print('success')
+            flash('You have successfully logged in.')
+            return redirect ('/')
 
         else:
             flash('Incorrect Password. Please try again.')
-            return redirect ('/')                     
+            return redirect ('/login')   
+           
+    # # If user exists but incorrect email/pass
+    # elif user != None:
+    #     flash('Incorrect email or password.') 
+
+    # # If user/email/password does not exist, try again or sign up. 
+    # else:
+    #         flash('Email and password not registered. Please check your credentials or sign up.')
+    #         return redirect ('/')     
 
 
     
@@ -82,17 +137,22 @@ def logout_user():
     """ Logs out user """
 
     session.clear()
-
     return redirect('/')
 
 #############################################
 
 
-@app.route('/user-profile')
-def show_profile():
-    """Displays user profile"""
+@app.route('/profile')
+def show_user_profile():
+    """Show logged in user profile"""   
 
-    return render_template('profile.html')
+    if not session:
+        flash('Please login to view profile.')
+        return redirect('/login')
+       
+    
+    else:
+        return render_template('profile.html')
 
 
 @app.route('/new-playlist')
@@ -101,11 +161,13 @@ def generate_playlist():
 
     return render_template('new_playlist.html')
 
+
 @app.route('/saved-playlists')
 def show_playlists():
     """Displays saved playlists saved by user"""
 
     return render_template('playlists.html')
+
 
 @app.route('/about-radlist')
 def show_about():
@@ -115,7 +177,7 @@ def show_about():
 
 
 
-# What should this actually look like?
+
 if __name__ == "__main__":
     # DebugToolbarExtension(app)
     connect_to_db(app)
