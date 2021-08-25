@@ -4,9 +4,11 @@ from flask import (Flask, render_template, redirect, request, session,
                    flash, jsonify)
 from jinja2 import StrictUndefined
 from model import (connect_to_db, User, Playlist, Track)
+import requests
 import crud 
 import os
 from passlib.hash import argon2
+
 
 
 app = Flask(__name__)
@@ -16,28 +18,25 @@ app.config['PRESERVE_CONTEXT_ON_EXCEPTION'] = True
 LASTFM_API_KEY = os.environ['LASTFM_KEY']
 
 
-######### ROUTES ###############
+
 
 @app.route('/')
 def index():
     """ Display homepage """
 
-  
     return render_template('homepage.html')
 
 
-
-#############################################
-# USER SIGNUP/LOGIN ROUTES
 @app.route('/signup', methods=['GET'])
 def show_signup():
+    """ Displays user signup form """
 
     return render_template('signup.html')
 
+
 @app.route('/signup', methods=['POST'])
 def signup_user():
-    """ Signs up a user """
-    
+    """ Process user signup form """
     
     fname = request.form['fname']
     lname = request.form['lname']
@@ -49,15 +48,13 @@ def signup_user():
     # If email exists in db, redirect to homepage
     if user != None:
         flash('This email is already taken.')
-        return redirect('/')
+        return redirect('/signup')
 
     # If user email/pass is already in the db
     elif user != None and user.email == email and user.password == password:
         flash('This email and password already exists. Please go to Login to sign in.')
 
-
     # If a new user and all correct
-
     else:
         # Add new user
         new_user = crud.create_user(fname = fname, 
@@ -65,7 +62,6 @@ def signup_user():
                                     email = email,
                                     password = password)
        
-
         crud.db.session.add(new_user)
         crud.db.session.commit()
 
@@ -73,7 +69,8 @@ def signup_user():
         # might move this function out of crud
         user = crud.get_user_by_email(email) 
         session['EMAIL'] = user.email
-        session['NAME'] = user.fname 
+        session['FNAME'] = user.fname 
+        session['LNAME'] = user.lname
         session['ID'] = user.user_id
         print('success')
         flash('You have registered successfully.')
@@ -88,10 +85,9 @@ def show_login():
     return render_template('login.html')
 
 
-
 @app.route('/login', methods=['POST'])
 def process_login():
-    """ Logs in and verifies a user """
+    """ Logs in a user """
 
   
     # Get email and password from Login form
@@ -120,46 +116,99 @@ def process_login():
         else:
             flash('Incorrect Password. Please try again.')
             return redirect ('/login')   
-           
-    # # If user exists but incorrect email/pass
-    # elif user != None:
-    #     flash('Incorrect email or password.') 
-
-    # # If user/email/password does not exist, try again or sign up. 
-    # else:
-    #         flash('Email and password not registered. Please check your credentials or sign up.')
-    #         return redirect ('/')     
-
-
+      
     
 @app.route ('/logout')
 def logout_user():
     """ Logs out user """
 
     session.clear()
-    return redirect('/')
 
-#############################################
+    return redirect('/')
 
 
 @app.route('/profile')
 def show_user_profile():
-    """Show logged in user profile"""   
+    """ Displays user profile """   
 
+    # If user clicks on profile and not signed in
     if not session:
         flash('Please login to view profile.')
         return redirect('/login')
        
-    
     else:
         return render_template('profile.html')
 
 
-@app.route('/new-playlist')
-def generate_playlist():
-    """Displays generated playlist"""
 
-    return render_template('new_playlist.html')
+@app.route('/new-playlist', methods=['POST'])
+def generate_playlist():
+    """ Generates a playlist based on a given artist """
+    
+    # Get artist from form on homepage.html
+    form_artist = request.form.get('form_artist')
+
+
+    # Replaces artist in payload with with form_artist
+    artist = request.args.get('artist', form_artist)
+
+    # LAST FM endpoint for getting similar artists
+    url1 = 'http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar'
+
+
+    payload = {'artist': artist,
+               'api_key': LASTFM_API_KEY,
+               'format': 'json' }
+
+    response = requests.get(url1, params=payload)
+    data = response.json()
+   
+
+    # List of 15 similar artists
+    similar_artists_list = []
+
+    # Loop through list of similar artists and get 1st 15 artists
+    # Appending to similar_artists_list
+    for i in range (15):
+        similar_artists = (data['similarartists']['artist'][i])['name']
+        similar_artists_list.append(similar_artists)
+    
+    
+    # LAST FM endpoint for getting artist's top tracks
+    url2 = 'http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks'
+
+    #create empty dictionary and add track info with each loop
+    track_info = {}
+    # List of top tracks of ea. similar artist
+    top_tracks = []
+    # Loop through similar artist list to load track data
+    for name in similar_artists_list:
+        
+        payload2 = {'artist': name,
+                    'api_key': LASTFM_API_KEY,
+                    'format': 'json',
+                    'limit': 2}
+        
+        
+        # Response from second API call for top tracks
+        response2 = requests.get(url2, params=payload2)
+        data2 = response2.json() 
+        
+        # Loop through to get Top 2 tracks of ea. 
+        # similar artist and append to top tracks list
+        for i in range(2):
+            track = data2['toptracks']['track'][i]['name']
+            top_tracks.append(track)
+       
+
+    # create own dictionary or a dictionary with artist name ex: madonna w/ value with info from each track. going to have to save or add to a list.  
+
+    return render_template('new_playlist.html', 
+                            data=data, 
+                            data2=data2, 
+                            similar_artists_list=similar_artists_list, top_tracks=top_tracks)
+
+
 
 
 @app.route('/saved-playlists')
@@ -169,12 +218,13 @@ def show_playlists():
     return render_template('playlists.html')
 
 
+
+
 @app.route('/about-radlist')
 def show_about():
     """Displays about page for RAD List"""
 
     return render_template('about_radlist.html')
-
 
 
 
