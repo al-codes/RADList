@@ -1,7 +1,35 @@
 {% extends 'base.html' %}
 {% block body %}
-<br>
-    <strong>A generated playlist goes here</strong><br>
+<table>
+   
+    <thead>
+        <tr> 
+            <th>Artist Name</th>
+            <th>Track Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{% for artist in similar_artists_list %}
+                    {{ artist }}<br>
+                    {{ artist }}<br>
+                {% endfor %}
+            </td>
+            <td>{% for track in top_tracks %}
+                    {{ track }}<br>
+                {% endfor %}
+
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+    
+    
+
+
+    <br>
     <a href="http://localhost:5000/">Homepage</a><br>
     
 {% endblock %}
