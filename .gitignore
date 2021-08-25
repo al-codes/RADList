@@ -1,2 +1,4 @@
 __pycache__/ 
 secret.sh
+.DS_Store
+static/.DS_Store

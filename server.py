@@ -2,7 +2,7 @@
 
 from flask import (Flask, render_template, redirect, request, session, 
                    flash, jsonify)
-from jinja2 import StrictUndefined
+from jinja2 import StrictUndefined, Template
 from model import (connect_to_db, User, Playlist, Track)
 import requests
 import crud 
@@ -181,6 +181,8 @@ def generate_playlist():
     track_info = {}
     # List of top tracks of ea. similar artist
     top_tracks = []
+    # Track images
+    track_images = []
     # Loop through similar artist list to load track data
     for name in similar_artists_list:
         
@@ -199,7 +201,8 @@ def generate_playlist():
         for i in range(2):
             track = data2['toptracks']['track'][i]['name']
             top_tracks.append(track)
-       
+         
+    
 
     # create own dictionary or a dictionary with artist name ex: madonna w/ value with info from each track. going to have to save or add to a list.  
 

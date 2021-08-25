@@ -1,13 +1,9 @@
 {% extends 'base.html' %}
 {% block body %}
     <br>
-    View a user profile here!<br><br>
-    User ID: {{ session['ID'] }}<br>
-    First Name: {{ session['FNAME']  }}<br>
-    Last Name: {{ session['LNAME'] }}<br>
-    Email: {{ session['EMAIL'] }}<br>
-    <a href="http://localhost:5000/saved-playlists">Saved Playlists</a><br>
-    <a href="http://localhost:5000/">Homepage</a><br>
+    Name: {{ session['FNAME']  }} {{ session['LNAME'] }}<br>
+    Email: {{ session['EMAIL'] }}<br><br>
+    <a href="http://localhost:5000/saved-playlists">My Saved Playlists</a><br>
     {% endblock %}
 </body>
 </html>
