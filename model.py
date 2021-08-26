@@ -15,11 +15,20 @@ class User(db.Model):
     email = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     photo = db.Column(db.String) # nullable
+
+    playlists = db.relationship("Playlist")
     
 
     def __repr__(self):
         return f'<User user_id={self.user_id}, Full name={self.fname} {self.lname}, email={self.email}>'
 
+# class UserPlaylist(db.Model):
+
+#     __tablename__ = "user_playlists"
+
+#     user_playlist_id = db.Column(db.Integer, primary_key=True, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+#     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
 
 
 class Playlist(db.Model):
@@ -38,7 +47,6 @@ class Playlist(db.Model):
                              
     def __repr__(self):
         return f'<Playlist playlist_id={self.playlist_id} name={self.name} user_id={self.user_id}>'
-
 
 
 class Track(db.Model):
