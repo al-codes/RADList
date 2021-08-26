@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block body %}
+    
+    <strong>View your saved playlists here</strong><br><br>
+    <table>
+   
+        <thead>
+            <tr> 
+                <th>Artist Name</th>
+                <th>Track Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% for artist in session['saved_playlist'] %}
+                        {{ artist }}<br>
+                        {{ artist }}<br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for track in session['saved_playlist'].values() %}
+                        {{ track[0] }}<br>
+                        {{ track[1] }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+{% endblock %}
+<!-- Javascript import -->
+<script src="/static/radlist.js"></script>
+</body>
+</html>

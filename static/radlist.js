@@ -1,10 +1,10 @@
 'use strict';
 
-// const homePage = $('#app');
+const savedPlaylist = $('#saved-playlist');
+const savePlaylistButton = $('#save_playlist_btn')
 
-// $.get('', (res) => {
-//     console.log(res);
-    // for (const berry of res.results) {
-//     //     berries.append(`<li>${berry.name}</li>`);
-//   }
-// );
+
+
+
+
+

@@ -10,25 +10,28 @@
     </thead>
     <tbody>
         <tr>
-            <td>{% for artist in similar_artists_list %}
+            <td>
+                {% for artist in track_info.keys() %}
                     {{ artist }}<br>
                     {{ artist }}<br>
                 {% endfor %}
             </td>
-            <td>{% for track in top_tracks %}
-                    {{ track }}<br>
+            <td>
+                {% for track in track_info.values() %}
+                    {{ track[0] }}<br>
+                    {{ track[1] }}<br>
                 {% endfor %}
             </td>
         </tr>
     </tbody>
 </table>
+<br>
+<form action="/saved-playlists" method="POST">
+    Would you like to save this playlist? <br>
+    <button type="submit" name="save_playlist_btn" id="save_playlist_btn">Save Playlist</button>
 
+</form>
 
-    
-    
-
-
-    <br>
     
     
 {% endblock %}

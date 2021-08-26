@@ -19,7 +19,6 @@ LASTFM_API_KEY = os.environ['LASTFM_KEY']
 
 
 
-
 @app.route('/')
 def index():
     """ Display homepage """
@@ -135,7 +134,7 @@ def show_user_profile():
     if not session:
         flash('Please login to view profile.')
         return redirect('/login')
-       
+
     else:
         return render_template('profile.html')
 
@@ -148,15 +147,11 @@ def generate_playlist():
     # Get artist from form on homepage.html
     form_artist = request.form.get('form_artist')
 
-
-    # Replaces artist in payload with with form_artist
-    artist = request.args.get('artist', form_artist)
-
     # LAST FM endpoint for getting similar artists
     url1 = 'http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar'
 
 
-    payload = {'artist': artist,
+    payload = {'artist': form_artist,
                'api_key': LASTFM_API_KEY,
                'format': 'json' }
 
@@ -172,17 +167,15 @@ def generate_playlist():
     for i in range (15):
         similar_artists = (data['similarartists']['artist'][i])['name']
         similar_artists_list.append(similar_artists)
-    
+   
     
     # LAST FM endpoint for getting artist's top tracks
     url2 = 'http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks'
 
     #create empty dictionary and add track info with each loop
     track_info = {}
-    # List of top tracks of ea. similar artist
-    top_tracks = []
-    # Track images
-    track_images = []
+
+  
     # Loop through similar artist list to load track data
     for name in similar_artists_list:
         
@@ -192,36 +185,73 @@ def generate_playlist():
                     'limit': 2}
         
         
+        # List of top tracks of ea. similar artist
+        top_tracks = []
+
         # Response from second API call for top tracks
         response2 = requests.get(url2, params=payload2)
         data2 = response2.json() 
         
+
         # Loop through to get Top 2 tracks of ea. 
         # similar artist and append to top tracks list
         for i in range(2):
             track = data2['toptracks']['track'][i]['name']
             top_tracks.append(track)
-         
+
+        # add name and top tracks to track info
+        track_info[name] = top_tracks
     
 
-    # create own dictionary or a dictionary with artist name ex: madonna w/ value with info from each track. going to have to save or add to a list.  
+    for name, track in track_info.items():
+        if name and track in track_info.items():
+            pass
+        else:
+            crud.create_track(track[0], name)
+            crud.create_track(track[1], name)
+
+
+    session['saved_playlist'] = track_info
+
+  
 
     return render_template('new_playlist.html', 
                             data=data, 
                             data2=data2, 
-                            similar_artists_list=similar_artists_list, top_tracks=top_tracks)
+                            track_info=track_info)
 
 
+############################################################
+@app.route('/saved-playlists', methods=['GET'])
+def show_playlist():
+    """ Displays saved playlists saved by user """
+
+    if not session:
+        flash('You must sign in to save/view playlists.')
+        return redirect("/")
+
+    # elif KeyError:
+    #     flash('You have no saved playlists.')
+    #     return redirect("/")
+    
+    return render_template("/savedplaylists.html")
 
 
-@app.route('/saved-playlists')
-def show_playlists():
-    """Displays saved playlists saved by user"""
-
-    return render_template('playlists.html')
+@app.route('/saved-playlists', methods=['POST'])
+def save_playlist():
+    """ Save playlist to profile """
 
 
+    playlist = request.args.get('save_playlist_btn')
+    user = crud.get_user_by_email(session['EMAIL'])
+    saved_playlist = crud.create_playlist(user, 'Saved Playlist') #Saves but always saves to this name
+    user_playlist = crud.add_playlist_to_user(saved_playlist, user)
 
+
+    return render_template("/savedplaylists.html")
+
+
+############################################################
 
 @app.route('/about-radlist')
 def show_about():
