@@ -27,8 +27,8 @@ def create_playlist(user, name):
     db.session.commit()
 
     return playlist
-    # (to test, have to create user with variable name and then 
-    # plug that user var into this fcn)
+    # to test, have to create user with variable name and then 
+    # plug that user var into this fcn
 
 def create_track(title, artist):
     """Creates a track."""
@@ -41,18 +41,24 @@ def create_track(title, artist):
     
     return track
 
-# def create_playlist_track(playlist_id, track_id):
-#     """Associate track with a playlist"""
+def add_playlist_to_user(playlist, user):
+    """ Adds playlist """
 
-#     playlist_track = Playlist_Track(playlist_id = playlist_id, 
-#                                     track_id = track_id)
+    user.playlists.append(playlist)
 
-#     return playlist_track
+    db.session.commit()
+
+
 def get_user_by_email(email):
     """Look up user by email."""
 
     return User.query.filter(User.email == email).first()
 
+def get_user_playlist(user):
+    """ Displays user playlists """
+
+    return User.query.filter(User.playlists == user).all()
+
 if __name__ == '__main__':
     from server import app
-    connect_to_db(app) #line 67 in connect to db -- name app not defined in app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    connect_to_db(app) 
