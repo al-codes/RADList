@@ -241,7 +241,7 @@ def save_playlist():
     playlist = request.args.get('save_playlist_btn')
     user = crud.get_user_by_email(session['EMAIL'])
     saved_playlist = crud.create_playlist(user, 'Saved Playlist') #Saves but always saves to this name
-    user_playlist = crud.add_playlist_to_user(saved_playlist, user)
+    user_playlist = crud.add_playlist_to_user(saved_playlist, user) 
 
     return render_template("/playlistdetails.html")
 
