@@ -1,9 +1,8 @@
 """ Server for RAD List """
 
-from flask import (Flask, render_template, redirect, request, session, 
-                   flash, jsonify)
-from jinja2 import StrictUndefined, Template
-from model import (connect_to_db, User, Playlist, Track)
+from flask import Flask, render_template, redirect, request, session, flash
+from jinja2 import StrictUndefined
+from model import connect_to_db, User, Playlist, Track
 import requests
 import crud 
 import os
@@ -26,11 +25,13 @@ def index():
     return render_template('homepage.html')
 
 
+
 @app.route('/signup', methods=['GET'])
 def show_signup():
     """ Displays user signup form """
 
     return render_template('signup.html')
+
 
 
 @app.route('/signup', methods=['POST'])
@@ -65,7 +66,6 @@ def signup_user():
         crud.db.session.commit()
 
         # Saving user to session
-        # might move this function out of crud
         user = crud.get_user_by_email(email) 
         session['EMAIL'] = user.email
         session['FNAME'] = user.fname 
@@ -84,10 +84,10 @@ def show_login():
     return render_template('login.html')
 
 
+
 @app.route('/login', methods=['POST'])
 def process_login():
     """ Logs in a user """
-
   
     # Get email and password from Login form
     email = request.form.get('email')
@@ -108,6 +108,7 @@ def process_login():
             session['FNAME'] = user.fname 
             session['LNAME'] = user.lname
             session['ID'] = user.user_id
+            session['saved_playlist'] = None
             print('success')
             flash('You have successfully logged in.')
             return redirect ('/')
@@ -117,6 +118,7 @@ def process_login():
             return redirect ('/login')   
       
     
+
 @app.route ('/logout')
 def logout_user():
     """ Logs out user """
@@ -126,11 +128,12 @@ def logout_user():
     return redirect('/')
 
 
+
 @app.route('/profile')
 def show_user_profile():
     """ Displays user profile """   
 
-    # If user clicks on profile and not signed in
+    # If user clicks on profile and not signed in   
     if not session:
         flash('Please login to view profile.')
         return redirect('/login')
@@ -202,17 +205,10 @@ def generate_playlist():
         # add name and top tracks to track info
         track_info[name] = top_tracks
     
-
-    for name, track in track_info.items():
-        if name and track in track_info.items():
-            pass
-        else:
-            crud.create_track(track[0], name)
-            crud.create_track(track[1], name)
-
-
+    # crud.create_user_playlist(track_info)
+    
     session['saved_playlist'] = track_info
-
+    # print(track_info)
   
 
     return render_template('new_playlist.html', 
@@ -221,37 +217,51 @@ def generate_playlist():
                             track_info=track_info)
 
 
-############################################################
-@app.route('/saved-playlists', methods=['GET'])
-def show_playlist():
+
+@app.route('/newplaylist/details', methods=['GET'])
+def show_playlist_details():
     """ Displays saved playlists saved by user """
 
+    if session and session['saved_playlist'] == None:
+        flash('You must first save a playlist to view saved playlists.')
+        return redirect("/")
+    
     if not session:
         flash('You must sign in to save/view playlists.')
         return redirect("/")
 
-    # elif KeyError:
-    #     flash('You have no saved playlists.')
-    #     return redirect("/")
-    
-    return render_template("/savedplaylists.html")
+    return render_template("/playlistdetails.html")
 
 
-@app.route('/saved-playlists', methods=['POST'])
+
+@app.route('/newplaylist/details', methods=['POST'])
 def save_playlist():
     """ Save playlist to profile """
-
 
     playlist = request.args.get('save_playlist_btn')
     user = crud.get_user_by_email(session['EMAIL'])
     saved_playlist = crud.create_playlist(user, 'Saved Playlist') #Saves but always saves to this name
     user_playlist = crud.add_playlist_to_user(saved_playlist, user)
 
+    return render_template("/playlistdetails.html")
 
-    return render_template("/savedplaylists.html")
+@app.route('/playlists')
+def show_saved_playlist():
+    """ Displays list of saved playlists """
 
+    # playlists = crud.get_all_playlists ### need to create this fcn
 
-############################################################
+    return render_template('myplaylists.html')
+
+@app.route('/playlists/<playlist_id>')
+def show_playlist_by_id(playlist_id):
+    """ Save playlist to profile """
+
+    # playlist = crud.get_playlist(playlist_id) #### need to create this fcn
+
+    pass
+    # return render_template('myplaylists.html', playlist=playlist)
+
 
 @app.route('/about-radlist')
 def show_about():
