@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 {% block body %}
+<img width=200 height=200 src="https://i.pinimg.com/originals/ab/4d/e0/ab4de08ece783245be1fb1f7fde94c6f.gif" /><br>
+
     <br>
     Name: {{ session['FNAME']  }} {{ session['LNAME'] }}<br>
     Email: {{ session['EMAIL'] }}<br><br>
-    <a href="http://localhost:5000/saved-playlists">My Saved Playlists</a><br>
+    <!-- <a href="http://localhost:5000/saved-playlists">My Saved Playlists</a><br> -->
     {% endblock %}
+    <!-- Javascript import -->  
+    <script src="/static/radlist.js"></script>
 </body>
 </html>
