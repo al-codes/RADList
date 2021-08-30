@@ -1,6 +1,7 @@
 """ RAD List db tables """
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship
 
 db = SQLAlchemy()
 
@@ -29,6 +30,11 @@ class User(db.Model):
 #     user_playlist_id = db.Column(db.Integer, primary_key=True, nullable=False)
 #     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
 #     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
+    
+#     users = db.relationship("User")
+
+#     def __repr__(self):
+#         return f'<UserPlaylist user_playlist_id={self.user_playlist_id} user_id={self.user_id}>'
 
 
 class Playlist(db.Model):
@@ -39,8 +45,9 @@ class Playlist(db.Model):
     playlist_id = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
- 
-    user = db.relationship("User") #relation between users and playlist defined here
+    
+    # user = db.relationship("User")
+    user = db.relationship("User", overlaps="playlists") #relation between users and playlist defined here
     tracks = db.relationship("Track",
                              secondary="playlist_tracks",
                              backref="playlists") #added additional info here with secondary
