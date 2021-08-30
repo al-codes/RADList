@@ -70,10 +70,7 @@ def get_user_playlist(user):
 
 
 
-def get_track(track_id):
-    """ Pulls a track """
 
-    return Track.query.get(track_id)
 
 
 
@@ -99,10 +96,20 @@ def get_playlist_by_id(playlist_id):
 
     # db.session.commit()
 
+# If you have the track ID
+def get_track(track_id):
+    """ Pulls a track """
+
+    return Track.query.get(track_id)
+
+# Get ID by song title
 def get_track_id(title):
     """ Gets track_id by title of song """
     # prob need to also include artist here bc dupe titles
-    return Track.query.filter(Track.title == title).first()
+    # this returns an object but I want it to return the 
+    # just the track_id   object.track_id
+    track_obj = Track.query.filter(Track.title == title).first()
+    return str(track_obj.track_id)
 
 
 def get_playlist_tracks(playlist_id):
@@ -115,9 +122,10 @@ def get_playlist_tracks(playlist_id):
 def create_user_playlist(track_info):
     """ Creates playlist saved by user """
 
-    #add a track to a playlist -- need to create this function
-    #add to association table 
-    #get paylist id and trackid just made and add to association table
+    #  create_playlist_track(playlist_id, track_id)
+    #add a track to a playlist -- create playlist track
+    #add to association table ???
+    #get playist id and trackid just made and add to association table
     # user = get_user_by_email(session['EMAIL'])
     user = get_user_by_email('pollo@cat.com')
     new_playlist = create_playlist(user, 'Fresh New Playlist')
@@ -126,9 +134,15 @@ def create_user_playlist(track_info):
         
         print(song[0])
         print(song[1])
+        song_id = get_track_id(song[0])
+        song_id2 = get_track_id(song[1])
+        print(song_id)
+
         # track_id2 = get_track_id(track[1])
-        # create_playlist_track(playlist_id, track_id)
-        # create_playlist_track('4', track_id1)
+
+        # create_playlist_track('4', num_id)
+        # create_playlist_track('4', num_id2)
+
         # # create_playlist_track('4', track_id2)
        
             

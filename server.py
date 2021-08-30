@@ -204,11 +204,14 @@ def generate_playlist():
 
         # add name and top tracks to track info
         track_info[name] = top_tracks
+        # create tracks to fill db
         crud.create_track(track, name)
         
         
-    
+    # creates new playlist and creates playlist tracks
     crud.create_user_playlist(track_info)
+    
+
     
     session['saved_playlist'] = track_info
     
