@@ -204,11 +204,14 @@ def generate_playlist():
 
         # add name and top tracks to track info
         track_info[name] = top_tracks
+        crud.create_track(track, name)
+        
+        
     
-    # crud.create_user_playlist(track_info)
+    crud.create_user_playlist(track_info)
     
     session['saved_playlist'] = track_info
-    # print(track_info)
+    
   
 
     return render_template('new_playlist.html', 
@@ -236,18 +239,45 @@ def show_playlist_details():
 
 @app.route('/newplaylist/details', methods=['POST'])
 def save_playlist():
-    """ Save playlist to profile """
+    """ Save playlist search details """
 
-    playlist = request.args.get('save_playlist_btn')
+    playlist = request.args.get('save_playlist_dt_btn')
     user = crud.get_user_by_email(session['EMAIL'])
-    saved_playlist = crud.create_playlist(user, 'Saved Playlist') #Saves but always saves to this name
-    user_playlist = crud.add_playlist_to_user(saved_playlist, user) 
+    # saved_playlist = crud.create_playlist(user, 'Saved Playlist') #Saves but always saves to this name
+    # user_playlist = crud.add_playlist_to_user(saved_playlist, user) 
 
     return render_template("/playlistdetails.html")
 
-@app.route('/playlists')
+
+
+@app.route('/playlists', methods=['GET'])
 def show_saved_playlist():
     """ Displays list of saved playlists """
+
+    # playlists = crud.get_all_playlists ### need to create this fcn
+
+    return render_template('myplaylists.html')
+
+@app.route('/playlists', methods=['POST'])
+def save_my_playlist():
+    """ Displays list of saved playlists """
+    
+    save_playlist = request.args.get('save_playlist_btn')
+
+    #get the user to assign to a new playlist
+    user = crud.get_user_by_email(session['EMAIL'])
+    
+    #create new playlist under username
+    fresh_new_playlist = crud.create_playlist(user, 'Fresh New Playlist')
+   
+      
+    #add tracks to that fresh new playlist by calling get tracks in crud
+    
+    # crud.get_track(track_id)  ### figure out why get_track by id isn't working
+
+    # get tracks that were already created
+    # for tracks in :
+    #     get tracks by id and assign to play
 
     # playlists = crud.get_all_playlists ### need to create this fcn
 
