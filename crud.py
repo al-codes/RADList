@@ -36,7 +36,8 @@ def create_playlist(user, name):
 
 def create_track(title, artist):
     """Creates a track."""
-    
+    # TODO check if track exists before creating
+
     track = Track(title = title, 
                 artist = artist)
     
@@ -44,6 +45,7 @@ def create_track(title, artist):
     db.session.commit()
     
     return track
+
 
 def create_playlist_track(playlist_id, track_id):
     """ Creates a playlist track for a specific playlist """
@@ -69,32 +71,11 @@ def get_user_playlist(user):
     return Playlist.query.filter(Playlist.user_id == user).all()
 
 
-
-
-
-
-
-# def add_playlist_to_user(playlist, user): 
-#     """ Adds playlist """
-
-#     user.playlists.append(playlist)
-
-#     db.session.commit()
-
-
 def get_playlist_by_id(playlist_id):
     """ Returns a playlist by playlist id """
 
     return Playlist.query.filter(Playlist.playlist_id == playlist_id).first()
 
-
-# def add_track_to_playlist(playlist_id, track_id):
-#     """ Add track to playlist """
-    
-#     pl = get_playlist_by_id(playlist_id)
-#     pl.append(track_id)
-
-    # db.session.commit()
 
 # If you have the track ID
 def get_track(track_id):
@@ -102,14 +83,18 @@ def get_track(track_id):
 
     return Track.query.get(track_id)
 
+
 # Get ID by song title
 def get_track_id(title):
     """ Gets track_id by title of song """
     # prob need to also include artist here bc dupe titles
     # this returns an object but I want it to return the 
     # just the track_id   object.track_id
+    
     track_obj = Track.query.filter(Track.title == title).first()
-    return str(track_obj.track_id)
+
+    if track_obj:
+        return str(track_obj.track_id)
 
 
 def get_playlist_tracks(playlist_id):
@@ -117,34 +102,16 @@ def get_playlist_tracks(playlist_id):
 
     return Playlist_Track.query.filter(Playlist_Track.playlist_id == playlist_id).all()
 
-##########################################################
 
-def create_user_playlist(track_info):
+def create_user_playlist(track_info, user, playlist_name):
     """ Creates playlist saved by user """
 
-    #  create_playlist_track(playlist_id, track_id)
-    #add a track to a playlist -- create playlist track
-    #add to association table ???
-    #get playist id and trackid just made and add to association table
-    # user = get_user_by_email(session['EMAIL'])
-    user = get_user_by_email('pollo@cat.com')
-    new_playlist = create_playlist(user, 'Fresh New Playlist')
+    new_playlist = create_playlist(user, playlist_name)
 
-    for song in track_info.values():
-        
-        print(song[0])
-        print(song[1])
-        song_id = get_track_id(song[0])
-        song_id2 = get_track_id(song[1])
-        print(song_id)
-
-        # track_id2 = get_track_id(track[1])
-
-        # create_playlist_track('4', num_id)
-        # create_playlist_track('4', num_id2)
-
-        # # create_playlist_track('4', track_id2)
-       
+    for track_name in track_info:
+        create_playlist_track(new_playlist.playlist_id, get_track_id(track_name))
+     
+    return new_playlist
             
 
 
