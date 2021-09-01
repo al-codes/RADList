@@ -89,7 +89,7 @@ class Playlist_Track(db.Model):
 
 
     
-def connect_to_db(flask_app, db_uri='postgresql:///radlist', echo=True):
+def connect_to_db(flask_app, db_uri='postgresql:///radlist', echo=False):
     """Connect the database to our Flask app."""
 
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
