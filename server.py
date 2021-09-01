@@ -149,6 +149,7 @@ def generate_playlist():
     
     # Get artist from form on homepage.html
     form_artist = request.form.get('form_artist')
+    
 
     # LAST FM endpoint for getting similar artists
     url1 = 'http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar'
@@ -156,71 +157,77 @@ def generate_playlist():
 
     payload = {'artist': form_artist,
                'api_key': LASTFM_API_KEY,
-               'format': 'json' }
+               'format': 'json',
+               'limit' : 15}
 
     response = requests.get(url1, params=payload)
     data = response.json()
    
+    # print(data['similarartists']['artist'])
 
     # List of 15 similar artists
-    similar_artists_list = []
+    # similar_artists_list = []
 
     # Loop through list of similar artists and get 1st 15 artists
     # Appending to similar_artists_list
-    for i in range (15):
-        similar_artists = (data['similarartists']['artist'][i])['name']
-        similar_artists_list.append(similar_artists)
+    # for i in range (15):
+    #     similar_artists = (data['similarartists']['artist'][i])['name']
+    #     similar_artists_list.append(similar_artists)
    
     
     # LAST FM endpoint for getting artist's top tracks
     url2 = 'http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks'
 
-    #create empty dictionary and add track info with each loop
-    track_info = {}
-
+    
+    top_tracks = []
+    artists = {}
   
     # Loop through similar artist list to load track data
-    for name in similar_artists_list:
-        
-        payload2 = {'artist': name,
+    for artist in data['similarartists']['artist']:
+
+        payload2 = {'artist': artist['name'],
                     'api_key': LASTFM_API_KEY,
                     'format': 'json',
                     'limit': 2}
-        
-        
-        # List of top tracks of ea. similar artist
-        top_tracks = []
+     
 
         # Response from second API call for top tracks
         response2 = requests.get(url2, params=payload2)
-        data2 = response2.json() 
+        artist_data = response2.json() 
         
-
+    
+        # print(data)
         # Loop through to get Top 2 tracks of ea. 
         # similar artist and append to top tracks list
-        for i in range(2):
-            track = data2['toptracks']['track'][i]['name']
-            top_tracks.append(track)
+        track_name_1 = artist_data['toptracks']['track'][0]['name']
+        track_name_2 = artist_data['toptracks']['track'][1]['name']
+        top_tracks.append(track_name_1)
+        top_tracks.append(track_name_2)
+
+        artists[artist['name']] = [track_name_1, track_name_2] 
+
+        # track_info[name] = top_tracks
+        crud.create_track(track_name_1, artist['name'])
+        crud.create_track(track_name_2, artist['name'])
+           
+        # print("Track: " + track)
+        # print("Name: " + name)
 
         # add name and top tracks to track info
-        track_info[name] = top_tracks
+        
         # create tracks to fill db
-        crud.create_track(track, name)
+        
+        # print(track)
         
         
     # creates new playlist and creates playlist tracks
-    crud.create_user_playlist(track_info)
-    
-
-    
-    session['saved_playlist'] = track_info
-    
-  
+    session['saved_playlist_id'] = crud.create_user_playlist(top_tracks, crud.get_user_by_email(session['EMAIL']), "FIX_ME").playlist_id
+    # print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+    # print(session['saved_playlist_id'])
+    # crud.get_playlist_by_id(session['saved_playlist_id'])
 
     return render_template('new_playlist.html', 
-                            data=data, 
-                            data2=data2, 
-                            track_info=track_info)
+                            data=artists)
 
 
 
