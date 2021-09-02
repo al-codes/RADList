@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block body %}
+
+
+<table>
+   
+    <thead>
+        <tr> 
+            <th>Artist Name</th>
+            <th>Track Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                {% for artist in artists %}
+                    {{ artist }}<br>
+                  
+                {% endfor %}
+            </td>
+       
+            <td>
+                {% for track in tracks %}
+                    {{ track }}<br>
+              
+                 {% endfor %}
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+<br>
+
+
+
+{% endblock %}    
+<!-- Javascript import -->  
+<script src="/static/radlist.js"></script>
+
+</body>
+</html>
