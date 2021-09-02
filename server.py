@@ -163,27 +163,28 @@ def generate_playlist():
     response = requests.get(url1, params=payload)
     data = response.json()
    
-    # print(data['similarartists']['artist'])
 
-    # List of 15 similar artists
-    # similar_artists_list = []
 
-    # Loop through list of similar artists and get 1st 15 artists
-    # Appending to similar_artists_list
-    # for i in range (15):
-    #     similar_artists = (data['similarartists']['artist'][i])['name']
-    #     similar_artists_list.append(similar_artists)
+    # List of 15 similar artists for template
+    similar_artists_list = []
+
+    for i in range (15):
+        similar_artists = (data['similarartists']['artist'][i])['name']
+        similar_artists_list.append(similar_artists)
    
     
-    # LAST FM endpoint for getting artist's top tracks
+    # LAST FM endpoint for getting artist's Top Tracks
     url2 = 'http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks'
 
-    
+    # A list of all Top 2 Tracks of every artist
     top_tracks = []
+   
+    # A dict of Artists and Tracks
     artists = {}
-  
-    # Loop through similar artist list to load track data
+    
+    # Loops through the similar artists list and inserts into payload
     for artist in data['similarartists']['artist']:
+       
 
         payload2 = {'artist': artist['name'],
                     'api_key': LASTFM_API_KEY,
@@ -191,49 +192,47 @@ def generate_playlist():
                     'limit': 2}
      
 
-        # Response from second API call for top tracks
+        # Response from second API call for Top Tracks
         response2 = requests.get(url2, params=payload2)
         artist_data = response2.json() 
         
-    
-        # print(data)
-        # Loop through to get Top 2 tracks of ea. 
-        # similar artist and append to top tracks list
+        
+        # Top 2 Tracks
         track_name_1 = artist_data['toptracks']['track'][0]['name']
         track_name_2 = artist_data['toptracks']['track'][1]['name']
         top_tracks.append(track_name_1)
         top_tracks.append(track_name_2)
 
-        artists[artist['name']] = [track_name_1, track_name_2] 
+
+        # Insert into artist dict of Artists and Tracks
+        artists[(artist['name'])] = [track_name_1, track_name_2] 
 
         # track_info[name] = top_tracks
         crud.create_track(track_name_1, artist['name'])
         crud.create_track(track_name_2, artist['name'])
-           
-        # print("Track: " + track)
-        # print("Name: " + name)
+        
+  
 
-        # add name and top tracks to track info
-        
-        # create tracks to fill db
-        
-        # print(track)
-        
-        
+    # stores previously searched playlist in session
+    session['saved_playlist'] = artists
+    
+
     # creates new playlist and creates playlist tracks
-    session['saved_playlist_id'] = crud.create_user_playlist(top_tracks, crud.get_user_by_email(session['EMAIL']), "FIX_ME").playlist_id
-    # print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-    # print(session['saved_playlist_id'])
-    # crud.get_playlist_by_id(session['saved_playlist_id'])
+    # session['saved_playlist_id'] = crud.create_user_playlist(top_tracks, crud.get_user_by_email(session['EMAIL']), "FIX_ME").playlist_id
+    
 
     return render_template('new_playlist.html', 
-                            data=artists)
+                            data=artists,
+                            similar_artists_list=similar_artists_list,
+                            top_tracks=top_tracks,
+                            artists=artists)
 
 
 
+# Not an intended feature but keeping for now
 @app.route('/newplaylist/details', methods=['GET'])
-def show_playlist_details():
-    """ Displays saved playlists saved by user """
+def show_last_search():
+    """ Displays last search """
 
     if session and session['saved_playlist'] == None:
         flash('You must first save a playlist to view saved playlists.')
@@ -247,18 +246,6 @@ def show_playlist_details():
 
 
 
-@app.route('/newplaylist/details', methods=['POST'])
-def save_playlist():
-    """ Save playlist search details """
-
-    playlist = request.args.get('save_playlist_dt_btn')
-    user = crud.get_user_by_email(session['EMAIL'])
-    # saved_playlist = crud.create_playlist(user, 'Saved Playlist') #Saves but always saves to this name
-    # user_playlist = crud.add_playlist_to_user(saved_playlist, user) 
-
-    return render_template("/playlistdetails.html")
-
-
 
 @app.route('/playlists', methods=['GET'])
 def show_saved_playlist():
@@ -266,41 +253,71 @@ def show_saved_playlist():
 
     # playlists = crud.get_all_playlists ### need to create this fcn
 
-    return render_template('myplaylists.html')
+    return render_template('savedplaylists.html')
+
+
 
 @app.route('/playlists', methods=['POST'])
 def save_my_playlist():
     """ Displays list of saved playlists """
     
+    playlist_name = request.form.get('save_playlist_form')
+
     save_playlist = request.args.get('save_playlist_btn')
 
-    #get the user to assign to a new playlist
-    user = crud.get_user_by_email(session['EMAIL'])
+    playlist = session['saved_playlist']    
     
-    #create new playlist under username
-    fresh_new_playlist = crud.create_playlist(user, 'Fresh New Playlist')
-   
-      
-    #add tracks to that fresh new playlist by calling get tracks in crud
+    tracks = []
     
-    # crud.get_track(track_id)  ### figure out why get_track by id isn't working
+    for artists in playlist.keys():
+        tracks.append(playlist[artists][0])
+        tracks.append(playlist[artists][1])
 
-    # get tracks that were already created
-    # for tracks in :
-    #     get tracks by id and assign to play
 
-    # playlists = crud.get_all_playlists ### need to create this fcn
+    # creates new playlist and creates playlist tracks 
+    session['saved_playlist_id'] = crud.create_user_playlist(
+            tracks, crud.get_user_by_email(session['EMAIL']), playlist_name).playlist_id
 
-    return render_template('myplaylists.html')
+
+    return render_template('savedplaylists.html', 
+                            playlist_name=playlist_name)
+
+
+
 
 @app.route('/playlists/<playlist_id>')
 def show_playlist_by_id(playlist_id):
     """ Save playlist to profile """
 
-    # playlist = crud.get_playlist(playlist_id) #### need to create this fcn
+    artists = []
+    tracks = []
+    
+    playlist_name = crud.get_playlist_name(playlist_id) #### need to create this fcn
+    playlist_tracks = crud.get_playlist_tracks(playlist_id)
+  
+    for artist_obj in playlist_tracks:
+        print(artist_obj)
+        artist = crud.get_artist_by_track_id(artist_obj.track_id)
+        artists.append(artist)
 
-    pass
-    # return render_template('myplaylists.html', playlist=playlist)
+    for track_obj in playlist_tracks:
+        track_name = crud.get_title_by_track_id(track_obj.track_id)
+        tracks.append(track_name)
+    
+    
+    
+    # artists[((crud.get_track(track_obj.track_id)).artist)] = track_name
+
+    # print(artists.values())
+        # artist[crud.get_track(track.track_id)).artist)] = 
+    # tracks = crud.get_track(playlist_tracks).title
+    # print(tracks)
+    # print(playlist_tracks)
+
+    return render_template('playlist_id.html', 
+                            playlist_name=playlist_name, 
+                            artists=artists, 
+                            tracks=tracks)
 
 
 @app.route('/about-radlist')
