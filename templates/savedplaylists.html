@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block body %}
+
+My Saved Playlists will go here<br><br>
+<a href="/playlists/{{ session['saved_playlist_id'] }}">{{ playlist_name }}</a>
+
+
+{% endblock %}
+</body>
+</html>
