@@ -97,22 +97,48 @@ def get_track_id(title):
         return str(track_obj.track_id)
 
 
+def get_title_by_track_id(track_id):
+    """ Gets track name by track ID """
+
+    track_obj = Track.query.filter(Track.track_id == track_id).first()
+
+    if track_obj:
+        return str(track_obj.title)
+
+
+def get_artist_by_track_id(track_id):
+    """ Get artist name by track ID """
+
+    artist_obj = Track.query.filter(Track.track_id == track_id).first()
+
+    if artist_obj:
+        return str(artist_obj.artist)
+
+
 def get_playlist_tracks(playlist_id):
     """ Gets list of all tracks in a user playlist """
 
     return Playlist_Track.query.filter(Playlist_Track.playlist_id == playlist_id).all()
 
 
-def create_user_playlist(track_info, user, playlist_name):
+def create_user_playlist(artists, user, playlist_name):
     """ Creates playlist saved by user """
 
     new_playlist = create_playlist(user, playlist_name)
 
-    for track_name in track_info:
+    for track_name in artists:
         create_playlist_track(new_playlist.playlist_id, get_track_id(track_name))
      
     return new_playlist
+       
             
+def get_playlist_name(playlist_id):
+    """ Gets playlist name by ID """
+
+    playlist_obj = Playlist.query.filter(Playlist.playlist_id == playlist_id).first()
+
+    if playlist_obj:
+        return playlist_obj.name
 
 
 if __name__ == '__main__':
