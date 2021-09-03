@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 {% block body %}
+<!--all links have the same (last) playlist id - how to access dict key in jinja -->
 
-My Saved Playlists will go here<br><br>
-<a href="/playlists/{{ session['saved_playlist_id'] }}">{{ playlist_name }}</a>
+    {% for playlist, playlist_id in playlists_and_playlist_ids.items() %}
 
+        <li><a href="/playlists/{{ playlist_id }}">{{ playlist }}</a></li><br>
 
+   
+{% endfor %}
 {% endblock %}
+    
 </body>
 </html>
