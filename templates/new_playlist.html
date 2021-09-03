@@ -11,33 +11,40 @@
     <tbody>
         <tr>
             <td>
-                {% for artist in track_info.keys() %}
+                {% for artist in SIMILAR_ARTISTS_LIST %}
                     {{ artist }}<br>
                     {{ artist }}<br>
                 {% endfor %}
             </td>
+       
             <td>
-                {% for track in track_info.values() %}
-                    {{ track[0] }}<br>
-                    {{ track[1] }}<br>
+                {% for track in TOP_TRACKS %}
+                    {{ track }}<br>
                 {% endfor %}
             </td>
         </tr>
+
     </tbody>
 </table>
 <br>
-<form action="/playlists" method="POST">
-    Save playlist  <br>
-    <button type="submit" name="save_playlist_btn" id="save_playlist_btn">Save Playlist</button>
-    <br>
-<form action="/newplaylist/details" method="POST">
-    Save playlist search details? <br>
-    <button type="submit" name="save_playlist_dt_btn" id="save_playlist_dt_btn">Save</button>
 
-</form>
-
-    
-    
+<!-- Button to save playlist -->
+<div id ="save-playlist-btn">
+    <form action="/playlists" method="POST"> Save as:
+       <input type="text" name=save_playlist_form id="save_playlist_form">
+    <!-- <button type="submit" name="save_playlist_btn" id="save_playlist_btn">Save Playlist</button> -->
+        <br>
+    </form>
+</div>
+    <div id="get-related-artists">
+        <form id="get-related-artists" action="/new-playlist" method="POST">
+            <label>Enter another artist: </label>    
+            <input type="text" name="form_artist" />
+        </form>
+    </div>
 {% endblock %}
+
+<!-- Javascript import -->
+<script src="/static/radlist.js"></script>
 </body>
 </html>
