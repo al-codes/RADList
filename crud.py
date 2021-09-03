@@ -59,6 +59,18 @@ def create_playlist_track(playlist_id, track_id):
     return playlist_track
 
 
+def create_user_playlist(tracks, user, playlist_name):
+    """ Creates playlist saved by user """
+
+    new_playlist = create_playlist(user, playlist_name)
+
+    for track_name in tracks:
+        create_playlist_track(new_playlist.playlist_id, get_track_id(track_name))
+     
+    return new_playlist
+
+#########################################################
+
 def get_user_by_email(email):
     """Look up user by email."""
 
@@ -77,20 +89,15 @@ def get_playlist_by_id(playlist_id):
     return Playlist.query.filter(Playlist.playlist_id == playlist_id).first()
 
 
-# If you have the track ID
 def get_track(track_id):
-    """ Pulls a track """
+    """ Gets a track by track ID """
 
     return Track.query.get(track_id)
 
 
-# Get ID by song title
 def get_track_id(title):
-    """ Gets track_id by title of song """
-    # prob need to also include artist here bc dupe titles
-    # this returns an object but I want it to return the 
-    # just the track_id   object.track_id
-    
+    """ Gets track ID by title of song """
+   
     track_obj = Track.query.filter(Track.title == title).first()
 
     if track_obj:
@@ -121,17 +128,6 @@ def get_playlist_tracks(playlist_id):
     return Playlist_Track.query.filter(Playlist_Track.playlist_id == playlist_id).all()
 
 
-def create_user_playlist(artists, user, playlist_name):
-    """ Creates playlist saved by user """
-
-    new_playlist = create_playlist(user, playlist_name)
-
-    for track_name in artists:
-        create_playlist_track(new_playlist.playlist_id, get_track_id(track_name))
-     
-    return new_playlist
-       
-            
 def get_playlist_name(playlist_id):
     """ Gets playlist name by ID """
 
@@ -139,6 +135,35 @@ def get_playlist_name(playlist_id):
 
     if playlist_obj:
         return playlist_obj.name
+    
+
+def get_saved_playlists(user):
+    """ Gets all saved user playlists """
+
+    user_playlist_objs = Playlist.query.filter(Playlist.user_id == user).all()
+   
+    playlist_names = []
+
+    if user_playlist_objs:
+        for up_object in user_playlist_objs:
+            playlist_names.append(up_object.name)
+
+    return playlist_names
+
+
+def get_user_playlist_ids(user):
+    """ Gets playlists IDs under user """
+    
+    user_playlist_objs = Playlist.query.filter(Playlist.user_id == user).all()
+    
+    playlist_ids = []
+    
+    for up_object in user_playlist_objs:
+        playlist_ids.append(up_object.playlist_id)
+    
+    return playlist_ids
+
+
 
 
 if __name__ == '__main__':
