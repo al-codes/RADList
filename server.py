@@ -143,6 +143,12 @@ def show_user_profile():
 
 
 
+
+# For /new-playlist and /playlists routes
+TOP_TRACKS = []
+SIMILAR_ARTISTS_LIST = []
+
+
 @app.route('/new-playlist', methods=['POST'])
 def generate_playlist():
     """ Generates a playlist based on a given artist """
@@ -166,20 +172,17 @@ def generate_playlist():
 
 
     # List of 15 similar artists for template
-    similar_artists_list = []
-
     for i in range (15):
         similar_artists = (data['similarartists']['artist'][i])['name']
-        similar_artists_list.append(similar_artists)
+        SIMILAR_ARTISTS_LIST.append(similar_artists)
    
     
+
     # LAST FM endpoint for getting artist's Top Tracks
     url2 = 'http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks'
 
-    # A list of all Top 2 Tracks of every artist
-    top_tracks = []
-   
-    # A dict of Artists and Tracks
+    
+    # A dict of artists and tracks
     artists = {}
     
     # Loops through the similar artists list and inserts into payload
@@ -200,32 +203,20 @@ def generate_playlist():
         # Top 2 Tracks
         track_name_1 = artist_data['toptracks']['track'][0]['name']
         track_name_2 = artist_data['toptracks']['track'][1]['name']
-        top_tracks.append(track_name_1)
-        top_tracks.append(track_name_2)
+        TOP_TRACKS.append(track_name_1)
+        TOP_TRACKS.append(track_name_2)
 
 
-        # Insert into artist dict of Artists and Tracks
-        artists[(artist['name'])] = [track_name_1, track_name_2] 
-
-        # track_info[name] = top_tracks
+       
         crud.create_track(track_name_1, artist['name'])
         crud.create_track(track_name_2, artist['name'])
         
-  
 
-    # stores previously searched playlist in session
-    session['saved_playlist'] = artists
-    
-
-    # creates new playlist and creates playlist tracks
-    # session['saved_playlist_id'] = crud.create_user_playlist(top_tracks, crud.get_user_by_email(session['EMAIL']), "FIX_ME").playlist_id
-    
-
+   
     return render_template('new_playlist.html', 
                             data=artists,
-                            similar_artists_list=similar_artists_list,
-                            top_tracks=top_tracks,
-                            artists=artists)
+                            SIMILAR_ARTISTS_LIST=SIMILAR_ARTISTS_LIST,
+                            TOP_TRACKS=TOP_TRACKS)
 
 
 
@@ -251,9 +242,21 @@ def show_last_search():
 def show_saved_playlist():
     """ Displays list of saved playlists """
 
-    # playlists = crud.get_all_playlists ### need to create this fcn
+     
+    playlists = crud.get_saved_playlists(crud.get_user_by_email(session['EMAIL']).user_id)
+    playlist_ids = crud.get_user_playlist_ids(crud.get_user_by_email(session['EMAIL']).user_id)
+    
+    playlists_and_playlist_ids = {}
+    
+    for playlist in playlists:
+        for playlist_id in playlist_ids:
+            playlists_and_playlist_ids[playlist] = playlist_id
+    
+   # Jinja template - all links have same playlist_id
+    
 
-    return render_template('savedplaylists.html')
+    return render_template('savedplaylists.html', 
+                            playlists_and_playlist_ids=playlists_and_playlist_ids)
 
 
 
@@ -261,63 +264,54 @@ def show_saved_playlist():
 def save_my_playlist():
     """ Displays list of saved playlists """
     
-    playlist_name = request.form.get('save_playlist_form')
 
+    playlist_name = request.form.get('save_playlist_form')
     save_playlist = request.args.get('save_playlist_btn')
 
-    playlist = session['saved_playlist']    
-    
-    tracks = []
-    
-    for artists in playlist.keys():
-        tracks.append(playlist[artists][0])
-        tracks.append(playlist[artists][1])
+    saved_playlist = crud.create_playlist(crud.get_user_by_email(session['EMAIL']), playlist_name)
+    playlist_id = saved_playlist.playlist_id
+
+    for track in TOP_TRACKS:
+        crud.create_playlist_track(saved_playlist.playlist_id, crud.get_track_id(track))
 
 
-    # creates new playlist and creates playlist tracks 
-    session['saved_playlist_id'] = crud.create_user_playlist(
-            tracks, crud.get_user_by_email(session['EMAIL']), playlist_name).playlist_id
-
-
-    return render_template('savedplaylists.html', 
-                            playlist_name=playlist_name)
-
-
+    return redirect('/playlists')
+   
 
 
 @app.route('/playlists/<playlist_id>')
 def show_playlist_by_id(playlist_id):
     """ Save playlist to profile """
 
-    artists = []
+    playlist_name = crud.get_playlist_name(playlist_id)
+
+    track_objs = crud.get_playlist_tracks(playlist_id)
+
+    # artists = {}
+    # Write dictionary instead of appending to two lists?
+    # Values can be overwritten - how to add to values 
+    # for track in track_obj:
+    #     artist = crud.get_artist_by_track_id(track.track_id)   
+    #     track = crud.get_title_by_track_id(track.track_id)
+    #     artists[artist] = track
+    #     artists[artist] = []
+    #     artists[artist].append(track)
+    
+    
     tracks = []
-    
-    playlist_name = crud.get_playlist_name(playlist_id) #### need to create this fcn
-    playlist_tracks = crud.get_playlist_tracks(playlist_id)
-  
-    for artist_obj in playlist_tracks:
-        print(artist_obj)
-        artist = crud.get_artist_by_track_id(artist_obj.track_id)
+    artists = []
+    for track in track_objs:
+        artist = crud.get_artist_by_track_id(track.track_id) 
+        track = crud.get_title_by_track_id(track.track_id)  
         artists.append(artist)
-
-    for track_obj in playlist_tracks:
-        track_name = crud.get_title_by_track_id(track_obj.track_id)
-        tracks.append(track_name)
+        tracks.append(track)
     
-    
-    
-    # artists[((crud.get_track(track_obj.track_id)).artist)] = track_name
-
-    # print(artists.values())
-        # artist[crud.get_track(track.track_id)).artist)] = 
-    # tracks = crud.get_track(playlist_tracks).title
-    # print(tracks)
-    # print(playlist_tracks)
 
     return render_template('playlist_id.html', 
-                            playlist_name=playlist_name, 
-                            artists=artists, 
+                            playlist_name=playlist_name,
+                            artists=artists,
                             tracks=tracks)
+
 
 
 @app.route('/about-radlist')
