@@ -17,15 +17,15 @@ bellina = crud.create_user('bellina', 'kitty', 'bellina@cat.com', 'luvsun')
    
 # # Create playlists
 # create_playlist(user, name)
-crud.create_playlist(alex, 'yacht rockers')
-crud.create_playlist(pollo, 'divas')
-crud.create_playlist(bellina, 'metal magic')
+# crud.create_playlist(alex, 'yacht rockers')
+# crud.create_playlist(pollo, 'divas')
+# crud.create_playlist(bellina, 'metal magic')
 
 # # Create tracks
 # create_track(title, artist)
-crud.create_track('sailin', 'christopher cross')
-crud.create_track('paradise', 'sade')
-crud.create_track('one', 'metallica')
+# crud.create_track('sailin', 'christopher cross')
+# crud.create_track('paradise', 'sade')
+# crud.create_track('one', 'metallica')
 
 # #Associate tracks with playlists
 # create_playlist_track(playlist_id, track_id)
