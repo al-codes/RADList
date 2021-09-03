@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block body %}
-
-
+<strong>{{ playlist_name }}</strong><br><br>
 <table>
    
     <thead>
@@ -15,27 +14,23 @@
             <td>
                 {% for artist in artists %}
                     {{ artist }}<br>
-                  
                 {% endfor %}
             </td>
        
             <td>
                 {% for track in tracks %}
                     {{ track }}<br>
-              
-                 {% endfor %}
+                {% endfor %}
             </td>
         </tr>
-
     </tbody>
 </table>
 <br>
 
 
 
+
 {% endblock %}    
-<!-- Javascript import -->  
-<script src="/static/radlist.js"></script>
 
 </body>
 </html>
