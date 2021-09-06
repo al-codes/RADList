@@ -1,29 +1,105 @@
-{% extends 'base.html' %}
-{% block body %}
-    <!-- Navigation -->
-    <a href="http://localhost:5000/signup">Sign Up</a> |
-    <a href="http://localhost:5000/login">Login</a> |
-    <a href="http://localhost:5000/logout">Logout</a> |
-    <a href="http://localhost:5000/profile">User Profile</a> |
-    <a href="http://localhost:5000/playlists">Saved Playlists</a> |
-    <a href="http://localhost:5000/about-radlist">About</a><br><br>
-
-    <div id="homepage">Give us your favorite artist and we’ll make you a playlist with songs from similar artists that you’ll love!</div><br>
- 
-
-    <!-- Related artist form -->
-    <div id="get-related-artists">
-        <form id="get-related-artists" action="/new-playlist" method="POST">    
-            <input type="text" name="form_artist" placeholder="enter an artist..." />
-        </form>
-    </div>
-    <br>
-    <br>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RAD List</title>
   
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" 
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+        crossorigin="anonymous"/>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Blinker&family=Roboto&display=swap" 
+        rel="stylesheet">
+
+  <!-- <link rel="icon" href="/static/logo.png"> -->
+<link rel="stylesheet" href="/static/css/stylesheet.css"/>
+<link rel="stylesheet" href="/static/css/homepage.css"/>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  {% for msg in get_flashed_messages() %}
+    <p class="flash-msg">
+      {{ msg }}
+    </p>
+  {% endfor %}
+  
+  <div class="bgimg">
+    <div class="title">
+      <div id="app-title"><h1>RAD List</h1></div>
+      <div><h2>Related Artist Discovery</h2></div>
+    </div>
+
+    <div id="login-info">
+        <div id="login">
+          <form id="login-form" action="/login" method="POST">  
+            <div class="row">
+              <div class="col">
+              </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                  <input class="form-control" type="text" name="email" required="required" placeholder="Email" />
+                </div>
+                <div class="col">
+                  <input class="form-control" type="password" name="password" required="required" placeholder="Password" />
+                </div>
+                <div class="col">
+                </div>
+                <div class="col">
+                </div>
+              </div>
+              <div>
+               <br>
+                <input id="submit-btn" type="submit" value="Log In" />
+                </div>
+            </div>
+          </form>
+        </div>
+    </div>
+
+    <div data-toggle="modal" data-target="#new-user-modal">
+    <br>
+        New to RAD List? Click here to sign up 
+    </div>
+    <div class="modal fade" id="new-user-modal" tabindex="-1" role="dialog" aria-labelledby="SignUpModalLabel" 
+        aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="SignUpModalLabel">Create an Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form id="signup-form" action="/users/create-user.json" method="POST">
+                <div>
+                    <input id="new-fname" type="text" name="fname" required="required" placeholder="First Name">
+                </div>
+                <div>
+                    <input id="new-lname" type="test" name="lname" required="required" placeholder="Last Name">
+                </div>
+                <div>
+                    <input id="new-email" type="text" name="email" required="required" placeholder="Email">
+                </div>
+                <div>
+                    <input id="new-password" type="text" name="password" required="required" placeholder="Password">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary"id="new-user-submit">Create My Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
     
-    {% endblock %}    
-    <!-- Javascript import -->  
-    <script src="/static/radlist.js"></script>
-    
-</body>
-</html>
+
+<!-- Script tags -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" 
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" 
+      crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
+      crossorigin="anonymous"></script>
+<script src="/static/js/homepage.js"></script>
