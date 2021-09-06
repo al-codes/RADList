@@ -1,0 +1,65 @@
+body {
+    font-family: 'Roboto';
+    background-color: white;
+    color: black;
+    text-align: center;
+    height: 100%
+}
+h2 {
+    font-size: 18px;
+    font-family: 'Blinker'
+}
+/* .bgimg{
+    background-image: url(/static/img/Islenia-Mil_Building-a-Playlist_Life-Kit-Podcast_LowRis.jpg); 
+    height: 100%;
+    /* position: relative; */
+    /* background-position: center;
+    background-repeat: repeat; */
+    /* background-size: cover;  */
+/* } */
+
+.form-control {
+    border-color: black;
+    background: transparent;
+}
+
+#app-title {
+    font-family: 'Shrikhand';
+    color: black;
+    font-weight: bolder;
+    font-size: xxx-large;
+    padding-top: 150px;
+}
+
+#login-info {
+    padding-top: 30px;
+}
+
+#submit-btn {
+    background: transparent;
+    color: black;
+    margin-top: 5px;
+}
+
+#new-email, 
+#new-password,
+#new-fname, 
+#new-lname {
+    background-color: white;
+    margin-bottom: 5px;
+}
+
+#alert-modal-text {
+    background-color: gray;
+}
+
+#alert-modal-header {
+    background-color: blueviolet;
+    height: 40px;
+}
+
+#alert-close {
+    padding-top: 0px;
+    padding-right: 4px;
+    padding-bottom: 0px;
+}
