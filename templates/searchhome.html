@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block body %}
+    <!-- Navigation -->
+    <a href="http://localhost:5000/users/profile/<fname>">Profile</a> |
+    <a href="http://localhost:5000/playlists">Saved Playlists</a> |
+    <a href="http://localhost:5000/about-radlist">About</a> |
+    <a href="http://localhost:5000/logout">Logout</a> 
+
+    <div id="homepage">Give us your favorite artist and we’ll make you a playlist with songs from similar artists that you’ll love!</div><br>
+ 
+
+    <!-- Related artist form -->
+    <div id="get-related-artists">
+        <form id="get-related-artists" action="/new-playlist" method="POST">    
+            <input type="text" name="form_artist" placeholder="enter an artist..." />
+        </form>
+    </div>
+    <br>
+    <br>
+  
+    
+    {% endblock %}    
+   
+</body>
+</html>
