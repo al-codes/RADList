@@ -3,7 +3,7 @@
 from model import db, User, Track, Playlist, Playlist_Track, connect_to_db
 from flask import session
 from passlib.hash import argon2
-
+import datetime
 
 def create_user(fname, lname, email, password):
     """Creates a new user."""
@@ -34,12 +34,13 @@ def create_playlist(user, name):
     # plug that user_var into this fcn
 
 
-def create_track(title, artist):
+def create_track(title, artist, track_dur):
     """Creates a track."""
     # TODO check if track exists before creating
 
     track = Track(title = title, 
-                artist = artist)
+                  artist = artist,
+                  track_dur = track_dur)
     
     db.session.add(track)
     db.session.commit()
@@ -121,6 +122,14 @@ def get_artist_by_track_id(track_id):
     if artist_obj:
         return str(artist_obj.artist)
 
+def get_track_dur(track_id):
+    """ Gets track duration by track ID """
+
+    track_obj = Track.query.filter(Track.track_id == track_id).first()
+
+    if track_obj:
+        return str(track_obj.track_dur)        
+
 
 def get_playlist_tracks(playlist_id):
     """ Gets list of all tracks in a user playlist """
@@ -164,7 +173,16 @@ def get_user_playlist_ids(user):
     return playlist_ids
 
 
-
+def convert_millis(track_dur_lst):
+    converted_track_times = []
+    for track_dur in track_dur_lst:
+        seconds = (int(track_dur)/1000)%60
+        minutes = int(int(track_dur)/60000)
+        hours = int(int(track_dur)/(60000*60))
+        converted_time = '%02d:%02d:%02d' % (hours, minutes, seconds)
+        converted_track_times.append(converted_time)
+            
+    return converted_track_times
 
 if __name__ == '__main__':
     from server import app
