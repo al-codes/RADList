@@ -7,6 +7,7 @@
         <tr> 
             <th>Artist Name</th>
             <th>Track Name</th>
+            <th>Track Duration</th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +21,11 @@
             <td>
                 {% for track in tracks %}
                     {{ track }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for dur in track_durs %}
+                    {{ dur }}<br>
                 {% endfor %}
             </td>
         </tr>
