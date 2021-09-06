@@ -6,20 +6,25 @@
         <tr> 
             <th>Artist Name</th>
             <th>Track Name</th>
+            <th>Track Duration</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>
-                {% for artist in SIMILAR_ARTISTS_LIST %}
-                    {{ artist }}<br>
+                {% for artist in similar_artists_list %}
                     {{ artist }}<br>
                 {% endfor %}
             </td>
        
             <td>
-                {% for track in TOP_TRACKS %}
+                {% for track in top_track_list %}
                     {{ track }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                {% for dur in conv_track_lengths %}
+                    {{ dur }}<br>
                 {% endfor %}
             </td>
         </tr>
