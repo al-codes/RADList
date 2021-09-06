@@ -64,10 +64,10 @@ class Track(db.Model):
     track_id = db.Column(db.Integer, primary_key=True, nullable=False)
     title = db.Column(db.String, nullable=False)
     artist = db.Column(db.String, nullable=False)
-    
+    track_dur = db.Column(db.String, nullable=False)
 
     def __repr__(self):
-        return f'<Track track_id={self.track_id} title={self.title} artist={self.artist}>'
+        return f'<Track track_id={self.track_id} title={self.title} artist={self.artist} track_dur={self.track_dur}>'
 
 
 
