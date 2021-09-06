@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
+{% block title %}{{ fname }}'s Profile{% endblock %}
 {% block body %}
 <img width=200 height=200 src="https://i.pinimg.com/originals/ab/4d/e0/ab4de08ece783245be1fb1f7fde94c6f.gif" /><br>
-
-    <br>
+<br>
     Name: {{ session['FNAME']  }} {{ session['LNAME'] }}<br>
     Email: {{ session['EMAIL'] }}<br><br>
-    <!-- <a href="http://localhost:5000/saved-playlists">My Saved Playlists</a><br> -->
-    {% endblock %}
+
+<div>
+    <h1 id="user-name"></h1>
+</div>
+<div>
+    <p id="user-email"></p>
+</div>
+
+<a href="http://localhost:5000/playlists">My Saved Playlists</a><br>
+{% endblock %}
+
+{% block after_body %}
     <!-- Javascript import -->  
-    <script src="/static/radlist.js"></script>
-</body>
-</html>
+    <script src="/static/js/user_profile.js"></script>
+{% endblock %}
+</html
