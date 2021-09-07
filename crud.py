@@ -4,6 +4,9 @@ from model import db, User, Track, Playlist, Playlist_Track, connect_to_db
 from flask import session
 from passlib.hash import argon2
 import datetime
+import os
+
+
 
 def create_user(fname, lname, email, password):
     """Creates a new user."""
@@ -173,16 +176,7 @@ def get_user_playlist_ids(user):
     return playlist_ids
 
 
-def convert_millis(track_dur_lst):
-    converted_track_times = []
-    for track_dur in track_dur_lst:
-        seconds = (int(track_dur)/1000)%60
-        minutes = int(int(track_dur)/60000)
-        hours = int(int(track_dur)/(60000*60))
-        converted_time = '%02d:%02d:%02d' % (hours, minutes, seconds)
-        converted_track_times.append(converted_time)
-            
-    return converted_track_times
+
 
 if __name__ == '__main__':
     from server import app
