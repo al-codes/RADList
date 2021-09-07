@@ -1,5 +1,31 @@
-#homepage {
-    color: magenta;
-    ;
+#text-center {
+    font-weight: bold;
+   
 }
 
+
+.navbar-brand {
+    padding-left: 15px;
+}  
+
+h1 {
+    font-family: 'Shrikhand';
+}
+
+a.nav-link {
+    color: darkgrey;
+
+}
+
+#get-related-artists {
+    padding-top: 10px;
+    padding-right:15px;
+}
+#save_playlist_form {
+    padding-top: 0px;
+}
+
+#songs-similar-to {
+    marrgin-top: 20px;
+    margin-left: 10px;
+}
