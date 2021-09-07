@@ -3,19 +3,21 @@
 from flask import Flask, render_template, redirect, request, session, flash, jsonify
 from jinja2 import StrictUndefined
 from model import connect_to_db, User, Playlist, Track
-import requests
-import crud 
-import helper
-import os
+import requests, os
+import crud, helper
 from passlib.hash import argon2
 import json
+
+
 
 
 app = Flask(__name__)
 app.secret_key = 'dev'
 app.jinja_env.undefined = StrictUndefined
 app.config['PRESERVE_CONTEXT_ON_EXCEPTION'] = True
+
 LASTFM_API_KEY = os.environ['LASTFM_KEY']
+
 
 
 
@@ -43,12 +45,10 @@ def signup_user():
 
     # If email exists in db, redirect to homepage
     if user != None:
-        flash('This email is already taken.')
         return jsonify('This email is already taken.')
 
     # If user email/pass is already in the db
     elif user != None and user.email == email and user.password == password:
-        flash('This email and password already exists. Please go to Login to sign in.')
         return jsonify('This email and password already exists. Please go to Login to sign in.')
     # If a new user and all correct
     else:
@@ -61,7 +61,6 @@ def signup_user():
         session['FNAME'] = user.fname 
         session['LNAME'] = user.lname
         session['ID'] = user.user_id
-        flash('You have registered successfully.')
         return jsonify('You have registered successfully. Please log in.')
 
 
@@ -103,6 +102,7 @@ def process_login():
 def search_artists():
     """ Search for similar artists """
 
+
     return render_template('searchhome.html')
 
 
@@ -117,16 +117,12 @@ def logout_user():
  
 
 
-@app.route('/users/profile/<fname>')
-def show_user_profile(fname):
+@app.route('/users/profile')
+def show_user_profile():
     """ Displays user profile """   
 
-    if not session:
-        flash('Please login to view profile.')
-        return redirect('/login')
-
-    else:
-        return render_template('profile.html', fname=fname)
+    
+    return render_template('profile.html')
 
 
 
@@ -153,7 +149,6 @@ def generate_playlist():
 
     top_track_list = []
     similar_artists_list = []
-
     # List of 15 similar artists for template
     for i in range (15):
         similar_artists = (data['similarartists']['artist'][i])['name']
@@ -219,11 +214,9 @@ def generate_playlist():
             track_duration_list.append(track_duration)
     
     # Convert tracks from milliseconds to 00:00:00 format
-    conv_track_lengths = crud.convert_millis(track_duration_list)
+    conv_track_lengths = helper.convert_millis(track_duration_list)
     
-    # similar_artists_list = []
-    # top_track_list = []
-    # conv_track_lengths = []
+    # 3 lists above - similar_artists_list, top_track_list, conv_track_lengths
     playlist_query_list = helper.create_artist_track_dur_list(similar_artists_list, top_track_list, conv_track_lengths)
    
     # Add tracks to db
@@ -232,23 +225,22 @@ def generate_playlist():
 
     # Save playlist info to session 
     session['queried_playlist'] = playlist_query_list
+    queried_artist = form_artist.title()
     
     
     # Track times will show but not saved in session/tracks
     return render_template('new_playlist.html', 
                             similar_artists_list=similar_artists_list,
                             top_track_list=top_track_list,
-                            conv_track_lengths=conv_track_lengths)
+                            conv_track_lengths=conv_track_lengths, 
+                            queried_artist=queried_artist)
 
 
 
 @app.route('/playlists', methods=['GET'])
 def show_saved_playlist():
     """ Displays list of saved playlists """
-    # Add logic if user not in session flash msg to log in
-    if not session:
-        flash('You must sign in to save/view playlists.')
-        return redirect("/")
+
 
     playlists = crud.get_saved_playlists(crud.get_user_by_email(session['EMAIL']).user_id)
     playlist_ids = crud.get_user_playlist_ids(crud.get_user_by_email(session['EMAIL']).user_id)
@@ -334,7 +326,6 @@ def show_about():
 if __name__ == "__main__":
     # DebugToolbarExtension(app)
     connect_to_db(app)
-    import sys
     app.run(host="0.0.0.0", debug=True)
 
 # if __name__ == "__main__":
