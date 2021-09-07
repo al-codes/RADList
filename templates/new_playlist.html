@@ -1,7 +1,20 @@
 {% extends 'base.html' %}
 {% block body %}
-<table>
-   
+<div id="songs-similar-to">
+<h4 style="margin-top:20px;">SONGS SIMILAR TO:</h4>
+<h2>{{ queried_artist }}</h2>
+</div>
+<!-- Button to save playlist -->
+<div id ="save-playlist-btn">
+    <form  class="col-sm-4 offset-sm-4" action="/playlists" method="POST"> 
+       <input class="form-control form-control-lg" type="text" name=save_playlist_form id="save_playlist_form" placeholder="Save playlist as..." style="margin-left:10px;margin-top:10px;">
+    <!-- <button type="submit" name="save_playlist_btn" id="save_playlist_btn">Save Playlist</button> -->
+        <br>
+    </form>
+</div>
+
+<table class="table table-striped" style="width:80%;margin-left:120px;margin-top:60px;"> 
+     
     <thead>
         <tr> 
             <th>Artist Name</th>
@@ -9,47 +22,53 @@
             <th>Track Duration</th>
         </tr>
     </thead>
+
     <tbody>
         <tr>
             <td>
                 {% for artist in similar_artists_list %}
-                    {{ artist }}<br>
+                {{ artist }}<br>
                 {% endfor %}
             </td>
+     
+      
        
+  
+    
+        
             <td>
-                {% for track in top_track_list %}
-                    {{ track }}<br>
-                {% endfor %}
-            </td>
-            <td>
+            {% for track in top_track_list %}
+            {{ track }}<br>
+            {% endfor %}
+             </td>
+           
+   
+  
+  
+        
+                <td>
                 {% for dur in conv_track_lengths %}
-                    {{ dur }}<br>
+                {{ dur }}<br>
                 {% endfor %}
             </td>
-        </tr>
+            </tr>
+   
+
 
     </tbody>
+
 </table>
 <br>
 
-<!-- Button to save playlist -->
-<div id ="save-playlist-btn">
-    <form action="/playlists" method="POST"> Save as:
-       <input type="text" name=save_playlist_form id="save_playlist_form">
-    <!-- <button type="submit" name="save_playlist_btn" id="save_playlist_btn">Save Playlist</button> -->
-        <br>
-    </form>
-</div>
+
     <div id="get-related-artists">
         <form id="get-related-artists" action="/new-playlist" method="POST">
-            <label>Enter another artist: </label>    
-            <input type="text" name="form_artist" />
+            <label>Search again? </label>    
+            <input type="text" name="form_artist" placeholder="enter an artist..."/>
         </form>
     </div>
+</div>
 {% endblock %}
 
-<!-- Javascript import -->
-<script src="/static/radlist.js"></script>
 </body>
 </html>
