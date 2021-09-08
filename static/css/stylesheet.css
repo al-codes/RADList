@@ -1,8 +1,3 @@
-#text-center {
-    font-weight: bold;
-   
-}
-
 
 .navbar-brand {
     padding-left: 15px;
@@ -11,21 +6,32 @@
 h1 {
     font-family: 'Shrikhand';
 }
+/* .bgimg {
+    background-image: url(/static/img/erik-mclean-9y1cTVKe1IY-unsplash.jpg);
+    height: 800px;
+    position: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+} */
 
 a.nav-link {
     color: darkgrey;
-
 }
-
+#text-center {
+    font-weight: bold;
+}
 #get-related-artists {
     padding-top: 10px;
     padding-right:15px;
 }
+
 #save_playlist_form {
-    padding-top: 0px;
+    margin-top: 40px;
 }
 
 #songs-similar-to {
-    marrgin-top: 20px;
+    margin-top: 20px;
     margin-left: 10px;
 }
+

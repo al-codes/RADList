@@ -1,18 +1,16 @@
 {% extends 'base.html' %}
 {% block body %}
-
-                  <span><p class="text-center" style="padding-top: 12%;text-align: left;"> 
-                             Give us your favorite artist</p>
-                  <p class="text-center" style="text-align: left">
-                             and we’ll make you a playlist with songs</p>
-                  <p class="text-center" style="text-align: left" >
-                             from similar artists that you’ll love!</p></span>
+<!-- <div class=bgimg></div> -->
+                  <h5 class="text-center" style="padding-top: 12%;text-align: left;font-family: 'Blinker';"> 
+                            <strong>Give us your favorite artist<br>
+                             and we’ll make you a playlist with songs<br>
+                             from related artists that you’ll love!</strong></h5>
                           
- 
+    
 
     <!-- Related artist form -->
     <div id="get-related-artists">
-        <form class="col-sm-4 offset-sm-4 "id="get-related-artists" action="/new-playlist" method="POST"> 
+        <form class="col-sm-4 offset-sm-4" id="get-related-artists" action="/new-playlist" method="POST"> 
             <div class="row justify-content-center">
             <input class="form-control form-control-lg" type="text" name="form_artist" placeholder="enter an artist..." />
         </form>

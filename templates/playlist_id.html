@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% block body %}
-<strong>{{ playlist_name }}</strong><br><br>
-<table>
+
+
+<div id="saved-playlist-name">
+    <h2>{{ session['FNAME'] }}'s Playlists:</h2>
+    <h2 style="margin-top:20px; margin-left:40px; font-size: 40px;"><strong>{{ playlist_name }}</strong></h2>
+
+<table class="table table-striped" style="width:80%;margin-left:120px;margin-top:60px;"> 
    
     <thead>
         <tr> 

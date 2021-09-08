@@ -4,7 +4,7 @@
 
     {% for playlist, playlist_id in playlists_and_playlist_ids.items() %}
 
-        <li><a href="/playlists/{{ playlist_id }}">{{ playlist }}</a></li><br>
+        <li><a id="playlist-links" href="/playlists/{{ playlist_id }}">{{ playlist }}</a></li><br>
 
    
 {% endfor %}

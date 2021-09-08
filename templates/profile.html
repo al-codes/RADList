@@ -1,23 +1,27 @@
 {% extends 'base.html' %}
-{% block title %}{{ fname }}'s Profile{% endblock %}
+{% block title %}{{ fname }} {{ lname }}'s Profile{% endblock %}
 {% block body %}
 <img width=200 height=200 src="https://i.pinimg.com/originals/ab/4d/e0/ab4de08ece783245be1fb1f7fde94c6f.gif" /><br>
-<br>
-    Name: {{ session['FNAME']  }} {{ session['LNAME'] }}<br>
-    Email: {{ session['EMAIL'] }}<br><br>
+
 
 <div>
-    <h1 id="user-name"></h1>
+    <h2 id="user-name"></h2>
 </div>
 <div>
-    <p id="user-email"></p>
+    <p id="user-email"></p> 
 </div>
 
-<a href="http://localhost:5000/playlists">My Saved Playlists</a><br>
+<!-- List of Saved Playlists (hidden)-->
+<ul id="list">
+    {% for playlist, playlist_id in playlists_and_playlist_ids.items() %}
+    <li><a id="playlist-links" href="/playlists/{{ playlist_id }}">{{ playlist }}</a></li>
+    {% endfor %}
+</ul>
+
+<!-- Show Saved Playlists Link-->
+<a id="saved-playlists-link" href="http://localhost:5000/playlists">Show My Saved Playlists</a><br>
+<ul id="ul"></div>
+<script src="/static/js/user_profile.js"></script>
 {% endblock %}
 
-{% block after_body %}
-    <!-- Javascript import -->  
-    <script src="/static/js/user_profile.js"></script>
-{% endblock %}
-</html
+</html>

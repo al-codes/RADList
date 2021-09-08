@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Blinker&family=Roboto&display=swap" 
         rel="stylesheet">
 
-  <!-- <link rel="icon" href="/static/logo.png"> -->
 <link rel="stylesheet" href="/static/css/stylesheet.css"/>
 <link rel="stylesheet" href="/static/css/homepage.css"/>
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
@@ -17,9 +16,13 @@
 </head>
 
 <body>
+  {% for msg in get_flashed_messages() %}
+  <p class="flash-msg">
+    {{ msg }}
+  </p>
+{% endfor %}
   
   
-  <div class="bgimg">
     <div class="title">
       <div id="app-title"><h1>RAD List</h1></div>
       <div><h2>Related Artist Discovery</h2></div>
@@ -51,7 +54,7 @@
             </div>
           </form>
         </div>
-    </div>
+    
 
     <div data-toggle="modal" data-target="#new-user-modal">
     <br>
@@ -89,7 +92,7 @@
           </div>
         </div>
       </div>
-    
+
 
 <!-- Script tags -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" 
@@ -99,3 +102,7 @@
       integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
       crossorigin="anonymous"></script>
 <script src="/static/js/homepage.js"></script>
+</div>
+</body>
+</html>
+

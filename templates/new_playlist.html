@@ -30,33 +30,19 @@
                 {{ artist }}<br>
                 {% endfor %}
             </td>
-     
-      
-       
-  
-    
-        
             <td>
-            {% for track in top_track_list %}
-            {{ track }}<br>
-            {% endfor %}
-             </td>
-           
-   
-  
-  
-        
-                <td>
+                {% for track in top_track_list %}
+                {{ track }}<br>
+                {% endfor %}
+            </td>
+            <td>
                 {% for dur in conv_track_lengths %}
                 {{ dur }}<br>
                 {% endfor %}
             </td>
-            </tr>
-   
-
-
+        </tr>
     </tbody>
-
+    
 </table>
 <br>
 
