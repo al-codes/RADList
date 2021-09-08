@@ -19,7 +19,6 @@ def create_user(fname, lname, email, password):
 
     db.session.add(user)
     db.session.commit()
-
     return user
 
 
@@ -31,10 +30,7 @@ def create_playlist(user, name):
 
     db.session.add(playlist)
     db.session.commit()
-
     return playlist
-    # to test, have to create user with variable name and then 
-    # plug that user_var into this fcn
 
 
 def create_track(title, artist, track_dur):
@@ -47,7 +43,6 @@ def create_track(title, artist, track_dur):
     
     db.session.add(track)
     db.session.commit()
-    
     return track
 
 
@@ -59,7 +54,6 @@ def create_playlist_track(playlist_id, track_id):
 
     db.session.add(playlist_track)
     db.session.commit()
-
     return playlist_track
 
 
@@ -70,9 +64,16 @@ def create_user_playlist(tracks, user, playlist_name):
 
     for track_name in tracks:
         create_playlist_track(new_playlist.playlist_id, get_track_id(track_name))
-     
     return new_playlist
 
+
+def create_many_tracks(sa_lst, track_lst, dur_lst):
+    """ Creates multiple tracks given a list """
+
+    for i in range(len(track_lst)):
+        create_track(track_lst[i], sa_lst[i], dur_lst[i])
+
+    
 #########################################################
 
 def get_user_by_email(email):
@@ -125,6 +126,7 @@ def get_artist_by_track_id(track_id):
     if artist_obj:
         return str(artist_obj.artist)
 
+
 def get_track_dur(track_id):
     """ Gets track duration by track ID """
 
@@ -153,13 +155,11 @@ def get_saved_playlists(user):
     """ Gets all saved user playlists """
 
     user_playlist_objs = Playlist.query.filter(Playlist.user_id == user).all()
-   
     playlist_names = []
 
     if user_playlist_objs:
         for up_object in user_playlist_objs:
             playlist_names.append(up_object.name)
-
     return playlist_names
 
 
@@ -167,14 +167,40 @@ def get_user_playlist_ids(user):
     """ Gets playlists IDs under user """
     
     user_playlist_objs = Playlist.query.filter(Playlist.user_id == user).all()
-    
     playlist_ids = []
     
     for up_object in user_playlist_objs:
         playlist_ids.append(up_object.playlist_id)
-    
     return playlist_ids
 
+
+def get_many_artists_by_track_obj(to_lst):
+    """ Get a list of artists from a list of track objects """
+
+    artists = []
+    for track in to_lst:
+        artist = get_artist_by_track_id(track.track_id)
+        artists.append(artist)
+    return artists
+
+
+def get_many_tracks_by_track_obj(to_lst):
+    """ Get a list of tracks from a list of track objects """
+    
+    tracks = []
+    for track in to_lst:
+        track = get_title_by_track_id(track.track_id)
+        tracks.append(track)
+    return tracks
+
+
+def get_many_durs_by_track_obj(to_lst):
+    """ Get a list of track duratiions from a list of track objects """
+    track_durs = []
+    for track in to_lst:
+        dur = get_track_dur(track.track_id)
+        track_durs.append(dur)
+    return track_durs
 
 
 
