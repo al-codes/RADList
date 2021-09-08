@@ -4,10 +4,9 @@ from flask import Flask, render_template, redirect, request, session, flash, jso
 from jinja2 import StrictUndefined
 from model import connect_to_db, User, Playlist, Track
 import requests, os
-import crud, helper
+import crud, helper, lastfm_api
 from passlib.hash import argon2
 import json
-
 
 
 
@@ -15,17 +14,17 @@ app = Flask(__name__)
 app.secret_key = 'dev'
 app.jinja_env.undefined = StrictUndefined
 app.config['PRESERVE_CONTEXT_ON_EXCEPTION'] = True
-
 LASTFM_API_KEY = os.environ['LASTFM_KEY']
-
 
 
 
 @app.route('/')
 def index():
     """ Display homepage """
-    
-    return render_template('homepage.html')
+    if session:
+        return redirect ('/search')
+    else:
+        return render_template('homepage.html')
 
 
 @app.route('/users/create-user.json', methods=['POST'])
@@ -101,7 +100,6 @@ def logout_user():
     return redirect('/')
  
 
-
 @app.route('/users/profile/<fname>')
 def show_user_profile(fname):
     """ Displays user profile and saved user playlists """   
@@ -109,11 +107,10 @@ def show_user_profile(fname):
     playlists = crud.get_saved_playlists(crud.get_user_by_email(session['EMAIL']).user_id)
     playlist_ids = crud.get_user_playlist_ids(crud.get_user_by_email(session['EMAIL']).user_id)
     playlists_and_playlist_ids = helper.create_dict_playlists_playlistids(playlists, playlist_ids)
-    
+
     return render_template('profile.html', 
                             fname=fname, 
                             playlists_and_playlist_ids=playlists_and_playlist_ids)
-
 
 
 @app.route('/users/profile/api')
@@ -188,6 +185,7 @@ def generate_playlist():
             track_duration = track_dur_data['track']['duration']
             track_duration_list.append(track_duration)
     
+    
     conv_track_lengths = helper.convert_millis(track_duration_list)
     playlist_query_list = helper.create_artist_track_dur_list(similar_artists_list, top_track_list, conv_track_lengths)
     crud.create_many_tracks(similar_artists_list, top_track_list, conv_track_lengths)
@@ -200,7 +198,6 @@ def generate_playlist():
                             queried_artist=queried_artist)
 
 
-
 @app.route('/playlists', methods=['GET'])
 def show_saved_playlist():
     """ Displays list of saved playlists """
@@ -211,7 +208,6 @@ def show_saved_playlist():
     
     return render_template('savedplaylists.html', 
                             playlists_and_playlist_ids=playlists_and_playlist_ids)
-
 
 
 @app.route('/playlists', methods=['POST'])
@@ -230,10 +226,8 @@ def save_my_playlist():
     
     for track in playlist_track_list:
         crud.create_playlist_track(saved_playlist.playlist_id, crud.get_track_id(track))
-
     return redirect('/playlists')
    
-
 
 @app.route('/playlists/<playlist_id>')
 def show_playlist_by_id(playlist_id):
@@ -246,13 +240,11 @@ def show_playlist_by_id(playlist_id):
     artists = crud.get_many_artists_by_track_obj(track_objs)
     track_durs = crud.get_many_durs_by_track_obj(track_objs)
 
-
     return render_template('playlist_id.html', 
                             playlist_name=playlist_name,
                             artists=artists,
                             tracks=tracks,
                             track_durs=track_durs)
-
 
 
 @app.route('/about-radlist')
