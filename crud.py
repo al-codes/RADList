@@ -3,7 +3,6 @@
 from model import db, User, Track, Playlist, Playlist_Track, connect_to_db
 from flask import session
 from passlib.hash import argon2
-import datetime
 import os
 
 
@@ -14,8 +13,7 @@ def create_user(fname, lname, email, password):
     user = User(fname=fname, 
                 lname=lname, 
                 email=email, 
-                password=argon2.hash(password), 
-                )
+                password=argon2.hash(password))
 
     db.session.add(user)
     db.session.commit()
@@ -35,15 +33,16 @@ def create_playlist(user, name):
 
 def create_track(title, artist, track_dur):
     """Creates a track."""
-    # TODO check if track exists before creating
-
-    track = Track(title = title, 
-                  artist = artist,
-                  track_dur = track_dur)
-    
-    db.session.add(track)
-    db.session.commit()
-    return track
+    if get_track_id(title):
+        pass
+    else:
+        track = Track(title = title, 
+                    artist = artist,
+                    track_dur = track_dur)
+        
+        db.session.add(track)
+        db.session.commit()
+        return track
 
 
 def create_playlist_track(playlist_id, track_id):
