@@ -1,6 +1,6 @@
 """CRUD operations."""
 
-from model import db, User, Track, Playlist, Playlist_Track, connect_to_db
+from model import (db, User, Track, Playlist, Playlist_Track, connect_to_db)
 from flask import session
 from passlib.hash import argon2
 import os
@@ -72,7 +72,7 @@ def create_many_tracks(sa_lst, track_lst, dur_lst):
     for i in range(len(track_lst)):
         create_track(track_lst[i], sa_lst[i], dur_lst[i])
 
-    
+
 #########################################################
 
 def get_user_by_email(email):
@@ -200,7 +200,6 @@ def get_many_durs_by_track_obj(to_lst):
         dur = get_track_dur(track.track_id)
         track_durs.append(dur)
     return track_durs
-
 
 
 if __name__ == '__main__':
