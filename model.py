@@ -2,8 +2,11 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
+from passlib.hash import argon2
+
 
 db = SQLAlchemy()
+
 
 
 class User(db.Model):
@@ -100,6 +103,35 @@ def connect_to_db(flask_app, db_uri='postgresql:///radlist', echo=False):
     db.init_app(flask_app)
 
     print('Connected to the db!')
+
+def create_fake_data():
+    """ Create fake users for testing """
+
+    User.query.delete()
+    Track.query.delete()
+    Playlist.query.delete()
+
+    anne = User(fname='Anne', lname='Ortiz', email='anne@test.com', password=argon2.hash('anne'))
+    nik = User(fname='Nik', lname='Alvarez', email='nik@test.com', password=argon2.hash('nik'))
+    track_list = []
+    
+    track1 = Track(title='Common People', artist='Pulp', track_dur='00:03:58')
+    track2 = Track(title='Coffee and TV', artist='Blur', track_dur='00:02:30')
+    track_list.append(track1)
+    track_list.append(track2)
+    playlist = Playlist(user=nik, name='Test Playlist')
+    db.session.add_all([anne, nik, track1, track2, playlist])
+  
+    db.session.commit()
+
+    # # playlist_track1 = Playlist_Track(playlist_id=playlist.playlist_id, track_id=track1.track_id)
+    # # playlist_track2 = Playlist_Track(playlist_id=playlist.playlist_id, track_id=track2.track_id)
+    # db.session.add(playlist)
+    # # db.session.add_all([playlist, playlist_track1, playlist_track2])    
+    # db.session.commit()
+
+
+
 
 
 if __name__ == '__main__':
