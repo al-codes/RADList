@@ -34,4 +34,4 @@ bellina = crud.create_user('bellina', 'kitty', 'bellina@cat.com', 'luvsun')
 # crud.create_playlist_track(3, 3)
  
 # only running once to populate database
-quit
+
