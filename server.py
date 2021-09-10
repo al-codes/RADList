@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, request, session, flash, jso
 from jinja2 import StrictUndefined
 from model import connect_to_db, User, Playlist, Track
 import requests, os
-import crud, helper, lastfm_api
+import crud, helper
 from passlib.hash import argon2
 import json
 
@@ -21,10 +21,9 @@ LASTFM_API_KEY = os.environ['LASTFM_KEY']
 @app.route('/')
 def index():
     """ Display homepage """
-    if session:
-        return redirect ('/search')
-    else:
-        return render_template('homepage.html')
+   
+    
+    return render_template('homepage.html')
 
 
 @app.route('/users/create-user.json', methods=['POST'])
@@ -59,37 +58,44 @@ def process_login():
     user = crud.get_user_by_email(email) 
    
     
-    if user == None:
-        flash('Email does not exist. Please sign up or try again.')
-        return redirect('/')
+    # if user == None:
+    #     flash('This account does not exist. Please sign up or try again.')
+    #     return redirect('/')
     
-    elif (user == user.email) and (input_password != user.password):
+    # if TypeError:
+    #     flash('Incorrect email or password.')
+    #     return redirect('/')
+
+    # else:
+    if user == None:
+        flash('This account does not exist. Please sign up or try again.')
+        return redirect('/')
+
+    elif argon2.verify(input_password, user.password):
+        session['EMAIL'] = user.email
+        session['FNAME'] = user.fname 
+        session['LNAME'] = user.lname
+        session['ID'] = user.user_id
+        session['queried_playlist'] = None
+        return redirect ('/search')
+
+    elif TypeError:
         flash('Incorrect email or password.')
         return redirect('/')
 
     else:
-        if not argon2.verify(input_password, user.password):
-            flash('Incorrect email or password.')
-            return redirect('/')
+        flash('Please sign up or try again.')
+        redirect('/')
 
-        elif argon2.verify(input_password, user.password):
-            session['EMAIL'] = user.email
-            session['FNAME'] = user.fname 
-            session['LNAME'] = user.lname
-            session['ID'] = user.user_id
-            session['queried_playlist'] = None
-            return redirect ('/search')
-
-        else:
-            flash('Please sign up or try again.')
-            redirect('/')
- 
 
 @app.route('/search')
 def search_artists():
     """ Main dashboard for searching for similar artists """
-
-    return render_template('searchhome.html')
+    
+    if not session:
+        return redirect('/')
+    else:
+        return render_template('searchhome.html')
 
 
 @app.route('/logout')
