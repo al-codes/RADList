@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, request, session, flash, jso
 from jinja2 import StrictUndefined
 from model import connect_to_db, User, Playlist, Track
 import requests, os
-import crud, helper
+import crud, helper, lastfm_api
 from passlib.hash import argon2
 import json
 
@@ -21,7 +21,6 @@ LASTFM_API_KEY = os.environ['LASTFM_KEY']
 @app.route('/')
 def index():
     """ Display homepage """
-   
     
     return render_template('homepage.html')
 
@@ -57,16 +56,6 @@ def process_login():
     input_password = request.form.get('password')
     user = crud.get_user_by_email(email) 
    
-    
-    # if user == None:
-    #     flash('This account does not exist. Please sign up or try again.')
-    #     return redirect('/')
-    
-    # if TypeError:
-    #     flash('Incorrect email or password.')
-    #     return redirect('/')
-
-    # else:
     if user == None:
         flash('This account does not exist. Please sign up or try again.')
         return redirect('/')
@@ -132,75 +121,19 @@ def generate_playlist():
     
     form_artist = request.form.get('form_artist')
     queried_artist = form_artist.title()
-    
-    # LAST FM endpoint for getting similar artists - API Call #1
-    url1 = 'http://ws.audioscrobbler.com/2.0/?method=artist.getsimilar'
 
-    payload = {'artist': form_artist,
-               'api_key': LASTFM_API_KEY,
-               'format': 'json',
-               'limit' : 15}
-
-    response = requests.get(url1, params=payload)
-    data = response.json()
-   
-    top_track_list = []
-    similar_artists_list = []
-    for i in range (15):
-        similar_artists = (data['similarartists']['artist'][i])['name']
-        similar_artists_list.append(similar_artists)
-        similar_artists_list.append(similar_artists)
-    
-    # LAST FM endpoint for getting artist's Top Tracks - API Call #2
-    url2 = 'http://ws.audioscrobbler.com/2.0/?method=artist.gettoptracks'
-
-    # Loops through the similar artists list and inserts into payload
-    for artist in data['similarartists']['artist']:
-       
-        payload2 = {'artist': artist['name'],
-                    'api_key': LASTFM_API_KEY,
-                    'format': 'json',
-                    'limit': 2}
-     
-        response2 = requests.get(url2, params=payload2)
-        artist_data = response2.json() 
-        
-        # Get Top 2 Tracks
-        track_name_1 = artist_data['toptracks']['track'][0]['name']
-        track_name_2 = artist_data['toptracks']['track'][1]['name']
-        top_track_list.append(track_name_1)
-        top_track_list.append(track_name_2)
-
-    sim_artists_and_top_tracks = helper.create_dict_sim_artists_top_tracks(similar_artists_list, top_track_list)
-    track_duration_list = [] # milliseconds
-
-     # LAST FM endpoint for getting artist's Top Tracks - API Call #3
-    url3 = 'http://ws.audioscrobbler.com/2.0/?method=track.getInfo'
-
-    for artist in sim_artists_and_top_tracks.keys():
-        for track in sim_artists_and_top_tracks[artist]:
-
-            payload3 = {'api_key': LASTFM_API_KEY,
-                        'artist': artist,
-                        'track': track,
-                        'format': 'json'}
-
-            response3 = requests.get(url3, params=payload3)
-            track_dur_data = response3.json() 
-            
-            track_duration = track_dur_data['track']['duration']
-            track_duration_list.append(track_duration)
-    
-    
+    similar_artists_list = lastfm_api.get_similar_artists(form_artist)
+    top_track_list = lastfm_api.get_top_tracks(similar_artists_list)
+    sim_artists_and_top_tracks_dict = helper.create_dict_sim_artists_top_tracks(similar_artists_list, top_track_list)
+    track_duration_list = lastfm_api.get_track_durations(sim_artists_and_top_tracks_dict)
     conv_track_lengths = helper.convert_millis(track_duration_list)
-    playlist_query_list = helper.create_artist_track_dur_list(similar_artists_list, top_track_list, conv_track_lengths)
+
+    playlist_query_dict = helper.create_dict_sim_artists_top_tracks_duration(similar_artists_list, top_track_list, conv_track_lengths)
     crud.create_many_tracks(similar_artists_list, top_track_list, conv_track_lengths)
-    session['queried_playlist'] = playlist_query_list
-    
+    session['queried_playlist'] = playlist_query_dict
+
     return render_template('new_playlist.html', 
-                            similar_artists_list=similar_artists_list,
-                            top_track_list=top_track_list,
-                            conv_track_lengths=conv_track_lengths, 
+                            playlist_query_dict=playlist_query_dict, 
                             queried_artist=queried_artist)
 
 
@@ -221,15 +154,17 @@ def save_my_playlist():
     """ Displays list of saved playlists """
 
     playlist_name = request.form.get('save_playlist_form')
-    save_playlist = request.args.get('save_playlist_btn')
+    # save_playlist = request.args.get('save_playlist_btn')
     saved_playlist = crud.create_playlist(crud.get_user_by_email(session['EMAIL']), playlist_name)
     playlist_id = saved_playlist.playlist_id
     playlist = session['queried_playlist'] 
-    
+
+
     playlist_track_list = [] 
-    for tracks in playlist:
-        playlist_track_list.append(tracks[1])
-    
+    for tracks in playlist.values():
+        playlist_track_list.append(tracks[0])
+        playlist_track_list.append(tracks[2])
+  
     for track in playlist_track_list:
         crud.create_playlist_track(saved_playlist.playlist_id, crud.get_track_id(track))
     return redirect('/playlists')
@@ -240,17 +175,9 @@ def show_playlist_by_id(playlist_id):
     """ Save playlist to profile """
 
     playlist_name = crud.get_playlist_name(playlist_id)
-    track_objs = crud.get_playlist_tracks(playlist_id)
-    
-    tracks = crud.get_many_tracks_by_track_obj(track_objs)
-    artists = crud.get_many_artists_by_track_obj(track_objs)
-    track_durs = crud.get_many_durs_by_track_obj(track_objs)
 
-    return render_template('playlist_id.html', 
-                            playlist_name=playlist_name,
-                            artists=artists,
-                            tracks=tracks,
-                            track_durs=track_durs)
+    return render_template('playlist_id.html',
+                            playlist_name=playlist_name)
 
 
 @app.route('/about-radlist')
