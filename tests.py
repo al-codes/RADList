@@ -1,10 +1,10 @@
+""" Tests for RAD List """
+
 from unittest import TestCase
 from server import app
 from model import connect_to_db, db, create_fake_data
 import crud
 import helper
-
-
 
 
 
@@ -97,21 +97,21 @@ class CrudTests(TestCase):
 
 
     def test_create_user(self):
-        """ Tests create user function """
+        """ Tests create user """
 
         user = crud.create_user('andrea@testcom', 'test', 'Andrea', 'Del Rio')
         self.assertIsNotNone(user.user_id)
 
 
     def test_create_track(self):
-        """ Tests create track function """
+        """ Tests create track """
 
         track = crud.create_track('You Make me Feel (Mighty Real)', 'Sylvester', '00:06:36')
         self.assertIsNotNone(track.track_id)
 
 
     def test_create_playlist(self):
-        """ Tests create playlist function """
+        """ Tests create playlist """
 
         user = crud.create_user('andrea@testcom', 'test', 'Andrea', 'Del Rio')
         playlist = crud.create_playlist(user, 'Test Playlist')
@@ -119,7 +119,7 @@ class CrudTests(TestCase):
     
 
     def test_create_playlist_track(self):
-        """ Tests create playlist track function """
+        """ Tests create playlist track """
 
         user = crud.create_user('andrea@testcom', 'test', 'Andrea', 'Del Rio')
         playlist = crud.create_playlist(user, 'Test Playlist')
@@ -129,48 +129,54 @@ class CrudTests(TestCase):
 
 
     def test_get_user_by_email(self):
-        """ Tests retrieving user by email function """
+        """ Tests retrieving user by email """
 
         user = crud.get_user_by_email('anne@test.com')
         self.assertIsNotNone(user.user_id)
 
 
     def test_get_user_playlist(self):
-        """ Tests retrieving a user playlist function """
+        """ Tests retrieving a user playlist """
 
         user = crud.create_user('andrea@testcom', 'test', 'Andrea', 'Del Rio')
         playlist = crud.create_playlist(user, 'Test Playlist')
-        self.assertIsNotNone(playlist.user_id)
+        self.assertIsNotNone(crud.get_user_playlist(str(user.user_id)))
 
 
     def test_get_playlist_by_id(self):
-        """ Test retrieving a playlist by playlist id """
+        """ Tests retrieving a playlist by playlist id """
         
-        self.assertIsNotNone(crud.get_user_by_email('anne@test.com'), 1)
+        self.assertEqual((str(crud.get_playlist_by_id('1').playlist_id)), '1')
 
 
-    # def test_get_track(self):
-    #     """ Gets a track by track ID """
+    def test_get_track(self):
+        """ Tests retrieving a track by track ID """
 
-    #     return Track.query.get(track_id)
-
-
-    # def test_get_track_id(self):
-    #     """ Gets track ID by title of song """
-    
-    #     track_obj = Track.query.filter(Track.title == title).first()
-
-    #     if track_obj:
-    #         return str(track_obj.track_id)
+        self.assertEqual((str(crud.get_track('1').track_id)), '1')
 
 
-    # def test_get_title_by_track_id(self):
-    #     """ Gets track name by track ID """
+    def test_get_track_id(self):
+        """ Tests retrieving track ID by title of song """
 
-    #     track_obj = Track.query.filter(Track.track_id == track_id).first()
+        self.assertEqual(crud.get_track_id('Common People'), '1')
 
-    #     if track_obj:
-    #         return str(track_obj.title)
+
+    def test_get_title_by_track_id(self):
+        """ Tests retrieving track name by track ID """
+
+        self.assertEqual(crud.get_title_by_track_id('1'), 'Common People')
+
+
+    def test_get_artist_by_track_id(self):
+        """ Tests retrieving artist name by track ID """
+
+        self.assertEqual(crud.get_artist_by_track_id('1'), 'Pulp')
+
+
+    def test_get_track_dur(self):
+        """ Tests retrieving track duration by track ID """
+
+        self.assertEqual(crud.get_track_dur('1'), '00:03:58')
 
 
 
