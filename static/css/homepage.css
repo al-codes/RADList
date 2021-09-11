@@ -23,7 +23,13 @@ h2 {
     padding-top: 150px;
     text-align: center;
 }
-
+a {
+    color:black;
+}
+a:hover {
+    color:black;
+    text-decoration: none;
+}   
 
 
 #login-info {
