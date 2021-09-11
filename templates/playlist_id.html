@@ -18,28 +18,28 @@
     <tbody>
         <tr>
             <td>
-                {% for artist in artists %}
-                    {{ artist }}<br>
+                {% for artist in session['queried_playlist'].keys() %}
+                {{ artist }}<br>
+                {{ artist }}<br>
                 {% endfor %}
             </td>
        
             <td>
-                {% for track in tracks %}
-                    {{ track }}<br>
+                {% for track in session['queried_playlist'].values() %}
+                {{ track[0] }}<br>
+                {{ track[2] }}<br>
                 {% endfor %}
             </td>
             <td>
-                {% for dur in track_durs %}
-                    {{ dur }}<br>
+                {% for dur in session['queried_playlist'].values() %}
+                {{ dur[1] }}<br>
+                {{ dur[3] }}<br>
                 {% endfor %}
             </td>
         </tr>
     </tbody>
 </table>
 <br>
-
-
-
 
 {% endblock %}    
 
