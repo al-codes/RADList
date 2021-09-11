@@ -8,7 +8,6 @@ from passlib.hash import argon2
 db = SQLAlchemy()
 
 
-
 class User(db.Model):
     """Data model for a user."""
     __tablename__ = "users"
@@ -22,22 +21,8 @@ class User(db.Model):
 
     playlists = db.relationship("Playlist")
     
-
     def __repr__(self):
         return f'<User user_id={self.user_id}, Full name={self.fname} {self.lname}, email={self.email}>'
-
-# class UserPlaylist(db.Model):
-
-#     __tablename__ = "user_playlists"
-
-#     user_playlist_id = db.Column(db.Integer, primary_key=True, nullable=False)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-#     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
-    
-#     users = db.relationship("User")
-
-#     def __repr__(self):
-#         return f'<UserPlaylist user_playlist_id={self.user_playlist_id} user_id={self.user_id}>'
 
 
 class Playlist(db.Model):
@@ -73,7 +58,6 @@ class Track(db.Model):
         return f'<Track track_id={self.track_id} title={self.title} artist={self.artist} track_dur={self.track_dur}>'
 
 
-
 class Playlist_Track(db.Model):
     """Data model for a playlist track assoc table."""
     
@@ -83,10 +67,6 @@ class Playlist_Track(db.Model):
     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.playlist_id'), nullable=False)
     track_id = db.Column(db.Integer, db.ForeignKey('tracks.track_id'), nullable=False)
 
-    # playlist = db.relationship("Playlist", backref="playlist_tracks") # dont need bc relationship defined already
-    # track = db.relationship("Track", backref="playlist_tracks")
-
-    
     def __repr__(self):
         return f'<Playlist_Track playlist_id={self.playlist_id} track_id={self.track_id}>'
 
@@ -121,7 +101,6 @@ def create_fake_data():
     track_list.append(track2)
     playlist = Playlist(user=nik, name='Test Playlist')
     db.session.add_all([anne, nik, track1, track2, playlist])
-  
     db.session.commit()
 
     # # playlist_track1 = Playlist_Track(playlist_id=playlist.playlist_id, track_id=track1.track_id)
@@ -129,8 +108,6 @@ def create_fake_data():
     # db.session.add(playlist)
     # # db.session.add_all([playlist, playlist_track1, playlist_track2])    
     # db.session.commit()
-
-
 
 
 
