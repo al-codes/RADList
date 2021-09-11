@@ -8,7 +8,6 @@
 <div id ="save-playlist-btn">
     <form  class="col-sm-4 offset-sm-4" action="/playlists" method="POST"> 
        <input class="form-control form-control-lg" type="text" name=save_playlist_form id="save_playlist_form" placeholder="Save playlist as..." style="margin-left:10px;margin-top:10px;">
-    <!-- <button type="submit" name="save_playlist_btn" id="save_playlist_btn">Save Playlist</button> -->
         <br>
     </form>
 </div>
@@ -26,19 +25,24 @@
     <tbody>
         <tr>
             <td>
-                {% for artist in similar_artists_list %}
+                {% for artist in playlist_query_dict.keys() %}
+                {{ artist }}<br>
                 {{ artist }}<br>
                 {% endfor %}
             </td>
             <td>
-                {% for track in top_track_list %}
-                {{ track }}<br>
+                {% for track in playlist_query_dict.values() %}
+                {{ track[0] }}<br>
+                {{ track[2] }}<br>
                 {% endfor %}
             </td>
             <td>
-                {% for dur in conv_track_lengths %}
-                {{ dur }}<br>
+                {% for dur in playlist_query_dict.values() %}
+                {{ dur[1] }}<br>
+                {{ dur[3] }}<br>
                 {% endfor %}
+
+            
             </td>
         </tr>
     </tbody>
