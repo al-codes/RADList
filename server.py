@@ -189,7 +189,6 @@ def show_about():
 
 
 
-
 if __name__ == "__main__":
     # DebugToolbarExtension(app)
     connect_to_db(app)
