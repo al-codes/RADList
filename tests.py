@@ -185,65 +185,7 @@ class CrudTests(TestCase):
     return Playlist_Track.query.filter(Playlist_Track.playlist_id == playlist_id).all()
 
 
-    def get_playlist_name(playlist_id):
-        """ Gets playlist name by ID """
-
-        playlist_obj = Playlist.query.filter(Playlist.playlist_id == playlist_id).first()
-
-        if playlist_obj:
-            return playlist_obj.name
     
-
-def get_saved_playlists(user):
-    """ Gets all saved user playlists """
-
-    user_playlist_objs = Playlist.query.filter(Playlist.user_id == user).all()
-    playlist_names = []
-
-    if user_playlist_objs:
-        for up_object in user_playlist_objs:
-            playlist_names.append(up_object.name)
-    return playlist_names
-
-
-def get_user_playlist_ids(user):
-    """ Gets playlists IDs under user """
-    
-    user_playlist_objs = Playlist.query.filter(Playlist.user_id == user).all()
-    playlist_ids = []
-    
-    for up_object in user_playlist_objs:
-        playlist_ids.append(up_object.playlist_id)
-    return playlist_ids
-
-
-def get_many_artists_by_track_obj(to_lst):
-    """ Get a list of artists from a list of track objects """
-
-    artists = []
-    for track in to_lst:
-        artist = get_artist_by_track_id(track.track_id)
-        artists.append(artist)
-    return artists
-
-
-def get_many_tracks_by_track_obj(to_lst):
-    """ Get a list of tracks from a list of track objects """
-    
-    tracks = []
-    for track in to_lst:
-        track = get_title_by_track_id(track.track_id)
-        tracks.append(track)
-    return tracks
-
-
-def get_many_durs_by_track_obj(to_lst):
-    """ Get a list of track duratiions from a list of track objects """
-    track_durs = []
-    for track in to_lst:
-        dur = get_track_dur(track.track_id)
-        track_durs.append(dur)
-    return track_durs
 
 
 
