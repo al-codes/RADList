@@ -154,7 +154,6 @@ def save_my_playlist():
     """ Displays list of saved playlists """
 
     playlist_name = request.form.get('save_playlist_form')
-    # save_playlist = request.args.get('save_playlist_btn')
     saved_playlist = crud.create_playlist(crud.get_user_by_email(session['EMAIL']), playlist_name)
     playlist_id = saved_playlist.playlist_id
     playlist = session['queried_playlist'] 
@@ -175,9 +174,11 @@ def show_playlist_by_id(playlist_id):
     """ Save playlist to profile """
 
     playlist_name = crud.get_playlist_name(playlist_id)
+    playlist_dict = helper.get_user_playlist_details_by_pid(playlist_id)
 
     return render_template('playlist_id.html',
-                            playlist_name=playlist_name)
+                            playlist_name=playlist_name,
+                            playlist_dict=playlist_dict)
 
 
 @app.route('/about-radlist')

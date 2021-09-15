@@ -1,24 +1,31 @@
 {% extends 'base.html' %}
 {% block body %}
-<div id="songs-similar-to">
-<h4 style="margin-top:20px;">SONGS SIMILAR TO:</h4>
-<h2>{{ queried_artist }}</h2>
+<div class=bgnewplaylistimg>
+
+  <div id="songs-similar-to">
+    SONGS SIMILAR TO:
+  </div>
+<div id="queried-artist">
+{{ queried_artist }}
 </div>
-<!-- Button to save playlist -->
-<div id ="save-playlist-btn">
-    <form  class="col-sm-4 offset-sm-4" action="/playlists" method="POST"> 
-       <input class="form-control form-control-lg" type="text" name=save_playlist_form id="save_playlist_form" placeholder="Save playlist as..." style="margin-left:10px;margin-top:10px;">
-        <br>
+
+
+<!-- Form input to save playlist -->
+<div id="save-playlist-btn">
+    <form  class="col-sm-4 offset-sm-9" action="/playlists" method="POST"> 
+       <input class="form-control form-control-lg" type="text" name=save_playlist_form id="save-playlist-form" required="required" placeholder="+ Name playlist here to save">
     </form>
 </div>
 
-<table class="table table-striped" style="width:80%;margin-left:120px;margin-top:60px;"> 
+
+<div class="container box">
+<table id="new-playlist-table" class="table table-light table-striped">
      
     <thead>
         <tr> 
-            <th>Artist Name</th>
-            <th>Track Name</th>
-            <th>Track Duration</th>
+            <th>ARTIST</th>
+            <th>TRACK</th>
+            <th>DURATION</th>
         </tr>
     </thead>
 
@@ -41,24 +48,16 @@
                 {{ dur[1] }}<br>
                 {{ dur[3] }}<br>
                 {% endfor %}
-
-            
             </td>
         </tr>
     </tbody>
     
 </table>
-<br>
-
-
-    <div id="get-related-artists">
-        <form id="get-related-artists" action="/new-playlist" method="POST">
-            <label>Search again? </label>    
-            <input type="text" name="form_artist" placeholder="enter an artist..."/>
-        </form>
-    </div>
 </div>
-{% endblock %}
+</div>
+    
 
+{% endblock %}
+<script src="/static/js/newplaylisttable.js"></script>
 </body>
 </html>

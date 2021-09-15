@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
 {% block body %}
-<!--all links have the same (last) playlist id - how to access dict key in jinja -->
 
-    {% for playlist, playlist_id in playlists_and_playlist_ids.items() %}
 
-        <li><a id="playlist-links" href="/playlists/{{ playlist_id }}">{{ playlist }}</a></li><br>
+<!-- <span id="saved-playlists-title"></span> -->
 
-   
-{% endfor %}
+<div class="container">
+    <div class="col-sm-4 offset-sm-4">
+        {% for playlist, playlist_id in playlists_and_playlist_ids.items() %}
+            <a id="playlist-links" href="/playlists/{{ playlist_id }}">{{ playlist }}</a><br>
+        {% endfor %}
+    </div>
+</div> 
+
 {% endblock %}
-    
 </body>
 </html>

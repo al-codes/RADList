@@ -1,45 +1,86 @@
-body {
-    font-family: 'Roboto';
-    color: black;
-    text-align: center;
-    height: 100%
-}
-h2 {
-    font-size: 18px;
-    font-family: 'Blinker'
+/* Styling for RAD List Homepage */
+
+a {
+    color:white;
 }
 
+a:hover {
+    color:white;
+    text-decoration: none;
+} 
 
-.form-control {
-    border-color: black;
-    background: transparent;
+.bgimg {
+    background-image: url(/static/img/homepage.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 800px;  
+
+}
+
+.flash-msg {
+    color: white;
+    font-family: 'Arial';
+    background: black;
 }
 
 #app-title {
     font-family: 'Shrikhand';
-    color: black;
-    font-weight: bolder;
-    font-size: xxx-large;
-    padding-top: 150px;
+    color: white;
+    font-weight: bold;
+    font-size: 5em;
+    padding-top: 210px;
     text-align: center;
+    letter-spacing: 5px;
+    
 }
-a {
-    color:black;
-}
-a:hover {
-    color:black;
-    text-decoration: none;
-}   
 
+#app-title span.x {
+    font-size: 16px;
+    text-align: left;
+}
+
+#app-subtitle { 
+    font-size: 24px;
+    font-family: 'Blinker';
+    text-align: center;
+    color: white;
+    margin-top: -36px;
+    text-decoration: none;
+    letter-spacing: 3px;
+    opacity: .9;
+}
+
+.form-control {
+    border-color: white;
+    border-radius: 0%;
+    background: rgba(255, 255, 255, 0.3);
+    border-width: 2px;
+    margin-bottom: 10px;
+}
+
+.form-control::placeholder {
+    color: white;
+    font-family: 'Blinker';
+}
 
 #login-info {
-    padding-top: 30px;
+    padding-top: 25px;
+    text-align: center;
+    color: white;
 }
 
 #submit-btn {
     background: transparent;
-    color: black;
-    margin-top: 5px;
+    color: white;
+    margin-top: 20px;
+    border-color: white;
+}
+
+#signup-trigger {
+    text-align: center;
+    font-family: 'Blinker';
+    color: white;
+    margin-top: 20px;
 }
 
 #new-email, 
@@ -50,17 +91,34 @@ a:hover {
     margin-bottom: 5px;
 }
 
-#alert-modal-text {
-    background-color: gray;
+.modal-header, 
+.modal-body, 
+.modal-footer {
+    background-color: black;
+    color: white;
+    font-family: 'Blinker';
+    letter-spacing: 2px;
+    align-content: center;
 }
 
-#alert-modal-header {
-    background-color: rgb(0, 0, 0);
-    height: 40px;
+.modal-body {
+    display: inline-block;
+    font-family: 'Arial';
 }
 
-#alert-close {
-    padding-top: 0px;
-    padding-right: 4px;
-    padding-bottom: 0px;
+button#new-user-submit.btn.btn-primary {
+    background-color: black;
+    color: white;
+    font-family: 'Blinker';
+    border-color: #2d3832;
+    width: 200px;
+    height: 47px;
+    margin-bottom: 15px;
+
 }
+
+#signup-form {
+    text-align: center;
+}
+
+

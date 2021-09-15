@@ -1,5 +1,6 @@
 """ Helper functions """
 
+import crud
 
 def create_artist_track_dur_list(artist_list, track_list, dur_list):
     """ Creates a list of artists, tracks and track duration """
@@ -58,4 +59,14 @@ def create_dict_playlists_playlistids(p_list, pid_list):
         playlists_and_playlist_ids[p_list[i]] = pid_list[i]
     return playlists_and_playlist_ids
 
-    
+
+def get_user_playlist_details_by_pid(pid):
+    """ Gets user playlist details by playlist ID """
+
+    playlist_track_objs = crud.get_playlist_tracks(pid)
+    artists = crud.get_many_artists_by_track_obj(playlist_track_objs)
+    tracks = crud.get_many_tracks_by_track_obj(playlist_track_objs)
+    track_durs = crud.get_many_durs_by_track_obj(playlist_track_objs)
+    playlist_dict = create_dict_sim_artists_top_tracks_duration(artists, tracks, track_durs)
+
+    return playlist_dict

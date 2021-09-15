@@ -7,6 +7,7 @@ import os
 
 
 
+
 def create_user(fname, lname, email, password):
     """Creates a new user."""
 
@@ -195,11 +196,14 @@ def get_many_tracks_by_track_obj(to_lst):
 
 def get_many_durs_by_track_obj(to_lst):
     """ Get a list of track duratiions from a list of track objects """
+
     track_durs = []
     for track in to_lst:
         dur = get_track_dur(track.track_id)
         track_durs.append(dur)
     return track_durs
+
+
 
 
 if __name__ == '__main__':

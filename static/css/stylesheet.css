@@ -1,37 +1,155 @@
+/* Stylesheet for RAD List app */
 
 .navbar-brand {
     padding-left: 15px;
+    font-family: 'Shirkhand';
 }  
 
 h1 {
     font-family: 'Shrikhand';
 }
-/* .bgimg {
-    background-image: url(/static/img/erik-mclean-9y1cTVKe1IY-unsplash.jpg);
-    height: 800px;
-    position: center;
-    background-position: center;
+
+.bgloginimg {
+    background-image: url(/static/img/searchhomeimg.jpg);
     background-repeat: no-repeat;
     background-size: cover;
-} */
+    height: 800px;  
+}
+
+.bgnewplaylistimg {
+    background-image: url(/static/img/newplaylistimg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 1400px;
+}
+
+#user-name, #user-email {
+    font-family: 'Blinker';
+}
 
 a.nav-link {
     color: darkgrey;
+    font-family: 'Blinker';
 }
+
+span.nav-item a.nav-link:hover {
+    color:lightgray;
+}
+
 #text-center {
     font-weight: bold;
 }
+
 #get-related-artists {
-    padding-top: 10px;
-    padding-right:15px;
+    border-color: white;
+    border-radius: 0%;
+    border-width: 1px;
+    padding-top: 110px;
 }
 
-#save_playlist_form {
-    margin-top: 40px;
+#get-related-artists::placeholder {
+    font-family: 'Blinker';
+    background: rgba(255, 255, 255, 0.3);
 }
 
 #songs-similar-to {
-    margin-top: 20px;
-    margin-left: 10px;
+    padding-left: 73px;
+    padding-top: 100px;
+    font-family: 'Blinker';
+    font-size: 16px;
+    color: white
 }
 
+#queried-artist {
+    padding-left: 73px;
+    font-family: 'Blinker';
+    font-size: 60px;
+    color:white;
+    margin-top: -20px;
+
+}
+
+#artist-search-text{
+    padding-left: 480px;
+
+}
+
+/* .form-control.form-control-lg {
+    border-color: white;
+    border-radius: 0%;
+    background: rgba(255, 255, 255, 0.2);
+    border-width: 1px;
+    width: 290px;
+    margin-top: -20px;
+} */
+
+#get-related-artist-input {
+    border-color: white;
+    border-radius: 0%;
+    background: rgba(255, 255, 255, 0.2);
+    border-width: 1px;
+    width: 550px;
+} 
+
+#save-playlist-btn input.form-control.form-control-lg {
+    border-color: white;
+    border-radius: 0%;
+    background: rgba(255, 255, 255, 0.2);
+    border-width: 1px;
+    width: 290px;
+    margin-top: -20px;
+}
+
+.form-control.form-control-lg::placeholder {
+    color: white;
+    font-family: 'Blinker';
+}
+
+#save-playlist-btn {
+    padding-bottom: 20px;
+}
+
+#new-playlist-table {
+    opacity: .8;
+}
+
+th, tr {
+    opacity: 2;
+    font-family: 'Blinker';
+}
+
+th {
+    font-size: 16px;
+}
+
+tr {
+    font-size: 20px;
+}
+
+#playlist-links {
+    color: black;
+    font-family: 'Blinker';
+    font-size: 20px;
+    text-decoration: none;
+}
+
+#saved-playlists-title {
+    color: white;
+    font-family: 'Blinker';
+    font-size: 16px;
+    padding-left: 73px;
+}
+
+#playlist-link-btns {
+    border-radius: 0%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: center;
+    width: 300px;
+    border-color: white;
+    
+}
+
+#playlist-link-btns:hover {
+    opacity: .5;
+} 
