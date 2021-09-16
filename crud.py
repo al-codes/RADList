@@ -7,7 +7,6 @@ import os
 
 
 
-
 def create_user(fname, lname, email, password):
     """Creates a new user."""
 
