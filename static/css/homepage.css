@@ -73,7 +73,7 @@ a:hover {
     background: transparent;
     color: white;
     margin-top: 20px;
-    border-color: white;
+    border-color: rgba(255, 255, 255, 0.89);
 }
 
 #signup-trigger {
