@@ -1,18 +1,17 @@
 {% extends 'base.html' %}
+{% block title %}My Saved Playlists{% endblock %}
+
 {% block body %}
+<div class="bgloginimg">
 
+  <p id="saved-playlists-title">My Saved Playlists:</p>
 
-<!-- <span id="saved-playlists-title"></span> -->
+  {% for playlist, playlist_id in playlists_and_playlist_ids.items() %}
+    <a id="playlist-links" href="/playlists/{{ playlist_id }}">{{ playlist }}</a><br>
+  {% endfor %}
+   
 
-<div class="container">
-    <div class="col-sm-4 offset-sm-4">
-        {% for playlist, playlist_id in playlists_and_playlist_ids.items() %}
-            <a id="playlist-links" href="/playlists/{{ playlist_id }}">{{ playlist }}</a><br>
-        {% endfor %}
-    </div>
-</div> 
-
-
+</div>
 {% endblock %}
 </body>
 </html>
