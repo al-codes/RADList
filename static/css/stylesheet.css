@@ -5,26 +5,43 @@
     font-family: 'Shirkhand';
 }  
 
-h1 {
-    font-family: 'Shrikhand';
-}
 
 .bgloginimg {
-    background-image: url(/static/img/searchhomeimg.jpg);
+    background-image: url(/static/img/searchhome.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     height: 800px;  
 }
 
 .bgnewplaylistimg {
-    background-image: url(/static/img/newplaylistimg.jpg);
+    background-image: url(/static/img/newplaylist.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     height: 1400px;
 }
 
+.profile-bg {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/static/img/profile.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 800px;  
+}
+
+.about-img {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/static/img/about.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 800px; 
+}
+
+h1 {
+    font-family: 'Shrikhand';
+}
+
 #user-name, #user-email {
     font-family: 'Blinker';
+    color: white;
+    font-size: 28px;
 }
 
 a.nav-link {
@@ -74,15 +91,6 @@ span.nav-item a.nav-link:hover {
 
 }
 
-/* .form-control.form-control-lg {
-    border-color: white;
-    border-radius: 0%;
-    background: rgba(255, 255, 255, 0.2);
-    border-width: 1px;
-    width: 290px;
-    margin-top: -20px;
-} */
-
 #get-related-artist-input {
     border-color: white;
     border-radius: 0%;
@@ -127,29 +135,99 @@ tr {
 }
 
 #playlist-links {
-    color: black;
+    color: white;
     font-family: 'Blinker';
-    font-size: 20px;
+    font-size: 25px;
     text-decoration: none;
+    padding-left: 60px;
+    
+}
+
+#list {
+    list-style-type: none;
 }
 
 #saved-playlists-title {
     color: white;
     font-family: 'Blinker';
-    font-size: 16px;
+    font-size: 28px;
+    padding-left: 20px;
+    padding-top: 10px;
+    margin-bottom: 8px;
+}
+
+#saved-playlist-user-title {
     padding-left: 73px;
+    padding-top: 100px;
+    font-family: 'Blinker';
+    font-size: 16px;
+    color: white
 }
 
-#playlist-link-btns {
-    border-radius: 0%;
-    margin-bottom: 10px;
-    margin-top: 10px;
+#saved-playlist-name {
+    padding-left: 73px;
+    font-family: 'Blinker';
+    font-size: 60px;
+    color:white;
+    margin-top: -20px;
+
+}
+
+#white-box {
+    background: rgba(255, 255, 255, 0.7);
+    width: 225px;
+    height: 225px;
+    line-height: 250px;
+    border-radius: 0px;
     text-align: center;
-    width: 300px;
-    border-color: white;
-    
+   
+    color: white;
+    margin-top: 40px;
+  }
+
+.col span.profile-dt {
+    font-family: 'Blinker';
+    font-size: 14px;
+    color: white;
+      
 }
 
-#playlist-link-btns:hover {
-    opacity: .5;
-} 
+#profile-img {
+    margin-top: -10px;
+}
+
+.profile-details {
+    margin-top: 40px;
+}
+
+.saved-pl-expand {
+    margin-top: 40px;
+}
+
+a#saved-playlists-link {
+    font-family: 'Blinker';
+    color: white;
+    font-size: 28px;
+    text-decoration-thickness: 2px;
+}
+
+#about-desc {
+    font-family: 'Blinker';
+    color: white;
+    font-size: 28px;
+    padding-left: 80px;
+    padding-top: 60px;
+    letter-spacing: 5px;
+}
+
+#about-desc2 {
+    font-family: 'Blinker';
+    color: white;
+    font-size: 28px;
+    padding-left: 183px;
+    padding-top: 20px;
+    letter-spacing: 5px;
+   
+}
+
+
