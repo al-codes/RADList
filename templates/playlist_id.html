@@ -1,17 +1,25 @@
 {% extends 'base.html' %}
+{% block title %}My Saved Playlist{% endblock %}
+
 {% block body %}
 
-<div id="saved-playlist-name">
-    <h2>{{ session['FNAME'] }}'s Playlists:</h2>
-    <h2 style="margin-top:20px; margin-left:40px; font-size: 40px;"><strong>{{ playlist_name }}</strong></h2>
+<div class="bgnewplaylistimg">
 
-<table class="table table-striped" style="width:80%;margin-left:120px;margin-top:60px;"> 
+<div id="saved-playlist-user-title">
+    {{ session['FNAME'] }}'s Saved Playlist:
+</div>
+<div id="saved-playlist-name">
+    {{ playlist_name }}
+</div>
+
+<div class="container box">
+<table id="new-playlist-table" class="table table-light table-striped">
    
     <thead>
         <tr> 
-            <th>Artist Name</th>
-            <th>Track Name</th>
-            <th>Track Duration</th>
+            <th>ARTIST</th>
+            <th>TRACK</th>
+            <th>DURATION</th>
         </tr>
     </thead>
     <tbody>
@@ -38,8 +46,8 @@
         </tr>
     </tbody>
 </table>
-<br>
-
+</div>
+</div>
 {% endblock %}    
 
 </body>
