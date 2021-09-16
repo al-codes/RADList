@@ -2,6 +2,7 @@
 
 import crud
 
+
 def create_artist_track_dur_list(artist_list, track_list, dur_list):
     """ Creates a list of artists, tracks and track duration """
     master = []
