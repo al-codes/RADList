@@ -67,7 +67,7 @@ Run the app:
 ````
 python3 server.py
 ````
-You can now navigate to 'localhose:5000/' to access RAD List
+You can now navigate to 'localhost:5000/' to access RAD List
 
 ## Using RAD List
 
